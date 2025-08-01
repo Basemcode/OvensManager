@@ -169,7 +169,7 @@
             // lblStatus
             // 
             lblStatus.AutoSize = true;
-            lblStatus.Location = new Point(12, 648);
+            lblStatus.Location = new Point(12, 634);
             lblStatus.Name = "lblStatus";
             lblStatus.Size = new Size(0, 20);
             lblStatus.TabIndex = 2;
@@ -259,7 +259,7 @@
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
             tableLayoutPanel1.RowStyles.Add(new RowStyle());
-            tableLayoutPanel1.Size = new Size(1221, 661);
+            tableLayoutPanel1.Size = new Size(1221, 614);
             tableLayoutPanel1.TabIndex = 4;
             // 
             // label5
