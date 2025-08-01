@@ -16,7 +16,7 @@ public class OvenDataService
         ushort startAddress = 0;
         ushort numRegisters = 13; // maximum 13
 
-        ModbusManager.Instance.Initialize("COM20"); // Initialize with the correct COM port
+        ModbusManager.Instance.Initialize("COM20"); // ToDo: Get the COM port from settings
 
         // read first 13 registers
         ushort[] registers0to12 = await ModbusManager.Instance.ReadInputRegisters(
