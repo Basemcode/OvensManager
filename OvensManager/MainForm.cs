@@ -25,35 +25,39 @@ public partial class MainForm : Form
         var numberOfReadings = 0;
         while (started)
         {
-            PLCValues pLCValues0 = new PLCValues();
-            pLCValues0.Registers = ModbusSerialRTUMasterReadRegisters(ovens[0].Id);
-            if (pLCValues0.Registers != null)
-            {
-                lblReg0.Text = pLCValues0.CurrentTemperature.ToString();
-                lblReg1.Text = pLCValues0.CurrentProgram.ToString();
-                lblReg2.Text = pLCValues0.CurrentStep.ToString();
-                lblReg3.Text = pLCValues0.OperatingMode.ToString();
+            OvenInfo ovenInfo0 = await OvenDataService.GetOvenInfo(ovens[0].Id);
+            
+                if (ovenInfo0.Registers != null)
+                {
+                    lblReg0.Text = ovenInfo0.CurrentTemperature.ToString();
+                    lblReg1.Text = ovenInfo0.CurrentProgram.ToString();
+                    lblReg2.Text = ovenInfo0.CurrentStep.ToString();
+                    lblReg3.Text = ovenInfo0.OperatingMode.ToString();
 
-                numberOfReadings++;
-                lblStatus.Text = numberOfReadings.ToString();
-            }
+                    numberOfReadings++;
+                    lblStatus.Text = numberOfReadings.ToString();
+                }
+            
+            
 
-            PLCValues pLCValues1 = new PLCValues();
+            OvenInfo ovenInfo1 = await OvenDataService.GetOvenInfo(ovens[1].Id);
             try
             {
-                pLCValues1.Registers = ModbusSerialRTUMasterReadRegisters(ovens[1].Id);
-                if (pLCValues1.Registers != null)
+                if (ovenInfo1.Registers != null)
                 {
-                    lblReg4.Text = pLCValues1.CurrentTemperature.ToString();
-                    lblReg5.Text = pLCValues1.CurrentProgram.ToString();
-                    lblReg6.Text = pLCValues1.CurrentStep.ToString();
-                    lblReg7.Text = pLCValues1.OperatingMode.ToString();
+                    lblReg4.Text = ovenInfo1.CurrentTemperature.ToString();
+                    lblReg5.Text = ovenInfo1.CurrentProgram.ToString();
+                    lblReg6.Text = ovenInfo1.CurrentStep.ToString();
+                    lblReg7.Text = ovenInfo1.OperatingMode.ToString();
 
                     numberOfReadings++;
                     lblStatus.Text = numberOfReadings.ToString();
                 }
             }
-            catch (Exception) { }
+            catch (Exception)
+            {
+                //ToDo: Handle exception if needed
+            }
 
             await Task.Delay(500);
         }

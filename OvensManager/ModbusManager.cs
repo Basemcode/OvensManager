@@ -48,9 +48,20 @@ public class ModbusManager
     }
 
     // Read Input Registers from a Modbus slave
-    public ushort[] ReadInputRegisters(byte slaveAddress, ushort startAddress, ushort numRegisters)
+    public async Task<ushort[]> ReadInputRegisters(byte slaveAddress, ushort startAddress, ushort numRegisters)
     {
-        return _master.ReadInputRegisters(slaveAddress, startAddress, numRegisters);
+        CultureHelper.SetCultureInfo();
+
+        // Now execute the code that causes the exception, e.g.
+        try
+        {
+            return await _master.ReadInputRegistersAsync(slaveAddress, startAddress, numRegisters);
+        }
+        catch (NModbus.SlaveException ex)
+        {
+            Console.WriteLine($"Slave exception: {ex.Message}");
+            throw;
+        }      
     }
 
     // Close the serial port connection

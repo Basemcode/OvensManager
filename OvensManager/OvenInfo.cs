@@ -7,7 +7,7 @@ using OvensManager.Enums;
 
 namespace OvensManager;
 
-public class PLCValues
+public class OvenInfo 
 {
     public ushort[]? Registers { get; set; } = null;
 
