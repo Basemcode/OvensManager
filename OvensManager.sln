@@ -5,7 +5,9 @@ VisualStudioVersion = 17.10.35122.118
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "OvensManager", "OvensManager\OvensManager.csproj", "{89D6C378-89C9-4204-9C98-C4F87DD0DF0D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Testing", "Testing\Testing.csproj", "{8E5EEEC5-76D6-4C05-8D71-E12BCACEDCA0}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Testing", "Testing\Testing.csproj", "{8E5EEEC5-76D6-4C05-8D71-E12BCACEDCA0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OvensManagerApp", "OvensManagerApp\OvensManagerApp.csproj", "{B0859BE7-77F5-464A-B13A-D2F2DDF7D144}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{8E5EEEC5-76D6-4C05-8D71-E12BCACEDCA0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E5EEEC5-76D6-4C05-8D71-E12BCACEDCA0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E5EEEC5-76D6-4C05-8D71-E12BCACEDCA0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0859BE7-77F5-464A-B13A-D2F2DDF7D144}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0859BE7-77F5-464A-B13A-D2F2DDF7D144}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0859BE7-77F5-464A-B13A-D2F2DDF7D144}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0859BE7-77F5-464A-B13A-D2F2DDF7D144}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
