@@ -6,12 +6,12 @@ namespace OvensManager;
 
 public partial class MainForm : Form
 {
-    private const string PrimarySerialPortName = "COM15";
+    private const string PrimarySerialPortName = "COM3";
     private bool started = false;
     List<Oven> ovens = new List<Oven>()
     {
-        new Oven() { Number = 2, Id = 120 },
-        new Oven() { Number = 3, Id = 104 },
+        new Oven() { Number = 2, Address = 48 },
+        new Oven() { Number = 3, Address = 80 },
     };
 
     public MainForm()
@@ -25,7 +25,7 @@ public partial class MainForm : Form
         var numberOfReadings = 0;
         while (started)
         {
-            OvenInfo ovenInfo0 = await OvenDataService.GetOvenInfo(ovens[0].Id);
+            OvenInfo ovenInfo0 = await OvenDataService.GetOvenInfo(ovens[0].Address);
             
                 if (ovenInfo0.Registers != null)
                 {
@@ -34,13 +34,12 @@ public partial class MainForm : Form
                     lblReg2.Text = ovenInfo0.CurrentStep.ToString();
                     lblReg3.Text = ovenInfo0.OperatingMode.ToString();
 
-                    numberOfReadings++;
-                    lblStatus.Text = numberOfReadings.ToString();
+                   
                 }
             
             
 
-            OvenInfo ovenInfo1 = await OvenDataService.GetOvenInfo(ovens[1].Id);
+            OvenInfo ovenInfo1 = await OvenDataService.GetOvenInfo(ovens[1].Address);
             try
             {
                 if (ovenInfo1.Registers != null)

@@ -1,14 +1,14 @@
-﻿using NModbus.Device;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO.Ports;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Threading;
-using NModbus;
-using NModbus.Serial;
 using System.Net.Sockets;
+using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
+using NModbus;
+using NModbus.Device;
+using NModbus.Serial;
 
 namespace OvensManager;
 
@@ -35,20 +35,31 @@ public class ModbusManager
     }
 
     // Initialize the serial port and Modbus master
-    public void Initialize(string portName, int baudRate = 9600, Parity parity = Parity.None, int dataBits = 8, StopBits stopBits = StopBits.One)
+    public void Initialize(
+        string portName,
+        int baudRate = 9600,
+        Parity parity = Parity.None,
+        int dataBits = 8,
+        StopBits stopBits = StopBits.One
+    )
     {
         if (_serialPort == null)
         {
+            // Create and configure the serial port
             _serialPort = new SerialPort(portName, baudRate, parity, dataBits, stopBits);
-            _serialPort.ReadTimeout = 500; // 500 millisecond
+            _serialPort.ReadTimeout = 1000; // 500 millisecond
             _serialPort.Open();
             var factory = new ModbusFactory();
-            _master = factory.CreateRtuMaster(_serialPort); 
+            _master = factory.CreateRtuMaster(_serialPort);
         }
     }
 
     // Read Input Registers from a Modbus slave
-    public async Task<ushort[]> ReadInputRegisters(byte slaveAddress, ushort startAddress, ushort numRegisters)
+    public async Task<ushort[]> ReadInputRegisters(
+        byte slaveAddress,
+        ushort startAddress,
+        ushort numRegisters
+    )
     {
         CultureHelper.SetCultureInfo();
 
@@ -61,7 +72,7 @@ public class ModbusManager
         {
             Console.WriteLine($"Slave exception: {ex.Message}");
             throw;
-        }      
+        }
     }
 
     // Close the serial port connection
@@ -72,7 +83,6 @@ public class ModbusManager
             _serialPort.Close();
         }
     }
-
 
     // Functions to be used later //
     // Read coils from a Modbus slave
@@ -88,7 +98,11 @@ public class ModbusManager
     }
 
     // Read holding registers from a Modbus slave
-    private ushort[] ReadHoldingRegisters(byte slaveAddress, ushort startAddress, ushort numRegisters)
+    private ushort[] ReadHoldingRegisters(
+        byte slaveAddress,
+        ushort startAddress,
+        ushort numRegisters
+    )
     {
         return _master.ReadHoldingRegisters(slaveAddress, startAddress, numRegisters);
     }
@@ -98,6 +112,4 @@ public class ModbusManager
     {
         _master.WriteMultipleRegisters(slaveAddress, startAddress, values);
     }
-
-    
 }
