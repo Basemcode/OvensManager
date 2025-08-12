@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Mbslave1.mbs
+/Mbslave2.mbs
+/resume.msw
+/Mbslave1.mbs
