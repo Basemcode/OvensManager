@@ -6,48 +6,42 @@
         xmlns:local="clr-namespace:OvensManagerApp"
         xmlns:controls="clr-namespace:OvensManagerApp.Controls"
         mc:Ignorable="d"
-        Title="MainWindow" 
-        
-        
+        Title="MainWindow"           
         WindowStartupLocation="Manual" 
-        Background="Transparent" 
-        d:DesignHeight="920" d:DesignWidth="1790" >
+        Background="White" 
+        Height="325" 
+        Width="530" >
     <Border CornerRadius="50" Margin="4">
         <Grid >
-            <Grid.ColumnDefinitions >
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="1*" />
-            </Grid.ColumnDefinitions >
-            <Grid.RowDefinitions >
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-            
-            <controls:OvenControl Grid.Row="0" Grid.Column="0"/>
-            <controls:OvenControl Grid.Row="0" Grid.Column="1"/>
-            <controls:OvenControl Grid.Row="0" Grid.Column="2"/>
-            <controls:OvenControl Grid.Row="0" Grid.Column="3"/>
-            <controls:OvenControl Grid.Row="1" Grid.Column="0"/>
-            <controls:OvenControl Grid.Row="1" Grid.Column="1"/>
-            <controls:OvenControl Grid.Row="1" Grid.Column="2"/>
-            <controls:OvenControl Grid.Row="1" Grid.Column="3"/>
-            <controls:OvenControl Grid.Row="2" Grid.Column="0"/>
-            <controls:OvenControl Grid.Row="2" Grid.Column="1"/>
-            <controls:OvenControl Grid.Row="2" Grid.Column="2"/>
-            <controls:OvenControl Grid.Row="2" Grid.Column="3"/>
-            <controls:OvenControl Grid.Row="3" Grid.Column="0"/>
-            <controls:OvenControl Grid.Row="3" Grid.Column="1"/>
-            <controls:OvenControl Grid.Row="3" Grid.Column="2"/>
-            <controls:OvenControl Grid.Row="3" Grid.Column="3"/>
-           
-                
-                
-     
+            <StackPanel Orientation="Vertical" >
 
-    </Grid>
+                <Button  Content="Открыть экран состояния" Width="150" Height="50" Margin="10" Click="OpenDashboard_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                
+                
+                
+                <Button Content="Запустить" Width="150" Height="50" Margin="10" Click="StartOnDashboard_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+
+                <Button Content="Maximize" Width="150" Height="50" Margin="10" Click="Button_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                
+            </StackPanel>
+        </Grid>
     </Border>
 </Window>

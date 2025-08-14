@@ -12,4 +12,8 @@
     <PackageReference Include="WpfScreenHelper" Version="2.1.1" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="ViewModels\" />
+  </ItemGroup>
+
 </Project>

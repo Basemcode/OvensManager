@@ -3,23 +3,23 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OvensManagerApp.Controls"
+             xmlns:local="clr-namespace:OvensManagerApp.Controls" 
              mc:Ignorable="d" 
              d:DesignHeight="150"
-             d:DesignWidth="200" 
-             
-             >
+             d:DesignWidth="200" >
 
-    <Border CornerRadius="20" Background="White" BorderBrush="Gray" BorderThickness="2" Margin="0.5">
+
+
+    <Border CornerRadius="20" Background="{Binding BackgroundColor}"  BorderBrush="Gray" BorderThickness="2" Margin="0.5">
         <Grid >
         <Grid.RowDefinitions>
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
             <RowDefinition Height="1*" />
         </Grid.RowDefinitions>
-            <TextBlock x:Name="Number" FontSize="35" Grid.Row="0" HorizontalAlignment="Center"  Text="00" VerticalAlignment="Center" />
-            <TextBlock x:Name="Temperature" FontSize="35" Grid.Row="1" HorizontalAlignment="Center"  Text="000" VerticalAlignment="Center" />
-            <TextBlock x:Name="Time" FontSize="35" Grid.Row="2" HorizontalAlignment="Center"  Text="00:00" VerticalAlignment="Center" />
+            <TextBlock x:Name="Number" Foreground="{Binding FontColor}"  FontSize="{Binding OvenFontSize}" Grid.Row="0" HorizontalAlignment="Center"  Text="{Binding OvenNumber, StringFormat=Печь № {0}}" VerticalAlignment="Center" />
+            <TextBlock x:Name="Temperature" Foreground="{Binding FontColor}" FontSize="{Binding OvenFontSize}" Grid.Row="1" HorizontalAlignment="Center"  Text="{Binding OvenTemperature}" VerticalAlignment="Center" />
+            <TextBlock x:Name="Time" Foreground="{Binding FontColor}" FontSize="{Binding OvenFontSize}" Grid.Row="2" HorizontalAlignment="Center"  Text="{Binding RunTime}" VerticalAlignment="Center" />
         </Grid>
    </Border>
 </UserControl>

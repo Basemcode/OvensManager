@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using OvensManagerApp.Views;
+using System.Text;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -17,33 +18,41 @@ namespace OvensManagerApp
     /// </summary>
     public partial class MainWindow : Window
     {
+        private OvensDashboardWindow _dashboard;
         public MainWindow()
         {
-            MoveToSecondScreen();
             InitializeComponent();
         }
 
-        private void MoveToSecondScreen()
+        private void OpenDashboard_Click(object sender, RoutedEventArgs e)
         {
-            // get all the available screens
-            var screens = WpfScreenHelper.Screen.AllScreens.ToList();
-            Screen screen;
-
-            // check if we have more than one screen
-            if (screens.Count < 2)
+            if (_dashboard is null)
             {
-                screen = screens[0];
+                _dashboard = new OvensDashboardWindow();
+                _dashboard.Closed += _dashboard_Closed;
+                _dashboard.Show();
             }
-            else
-            {
-                screen = screens[1];
-            }
+        }
 
-            // Set the position to the selected screen with maximaized size
-            Left = screen.WpfBounds.Left;
-            Top = screen.WpfBounds.Top;
-            Height = screen.WpfBounds.Height;
-            Width = screen.WpfBounds.Width;
+        private void _dashboard_Closed(object? sender, EventArgs e)
+        {
+            _dashboard = null;
+        }
+
+        private void StartOnDashboard_Click(object sender, RoutedEventArgs e)
+        {
+            if (_dashboard != null)
+            {
+                _dashboard.Start();
+            }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            if (_dashboard != null)
+            {
+                _dashboard.MaximizeWindow();
+            }
         }
     }
 }

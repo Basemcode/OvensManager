@@ -1,0 +1,34 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!-- Red -->
+    <LinearGradientBrush x:Key="RedGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFF5F6D" Offset="0"/>
+        <GradientStop Color="#FFC81D25" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Yellow -->
+    <LinearGradientBrush x:Key="YellowGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFFFF59E" Offset="0"/>
+        <GradientStop Color="#FFFBC02D" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Green -->
+    <LinearGradientBrush x:Key="GreenGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFB2FF59" Offset="0"/>
+        <GradientStop Color="#FF388E3C" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Black -->
+    <LinearGradientBrush x:Key="BlackGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FF4A4A4A" Offset="0"/>
+        <GradientStop Color="#FF000000" Offset="1"/>
+    </LinearGradientBrush>
+
+    <!-- Cyan -->
+    <LinearGradientBrush x:Key="CyanGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="#FFDEE8F5" Offset="0"/>
+        <GradientStop Color="#FFB7C9E2" Offset="1"/>
+    </LinearGradientBrush>
+    
+</ResourceDictionary>
