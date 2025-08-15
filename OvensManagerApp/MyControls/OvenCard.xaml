@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="OvensManagerApp.Controls.OvenControl"
+﻿<UserControl x:Class="OvensManagerApp.MyControls.OvenCard"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:OvensManagerApp.Controls" 
+             xmlns:local="clr-namespace:OvensManagerApp.MyControls" 
              mc:Ignorable="d" 
              d:DesignHeight="150"
              d:DesignWidth="200" >

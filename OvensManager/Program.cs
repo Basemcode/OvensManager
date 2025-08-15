@@ -1,8 +1,3 @@
-using NModbus;
-using NModbus.Extensions.Enron;
-using NModbus.Serial;
-using NModbus.Utility;
-using System.IO.Ports;
 namespace OvensManager;
 
 internal static class Program

@@ -6,7 +6,6 @@ using OwenioNet.IO;
 using OwenioNet.Types;
 using System.IO.Ports;
 
-
 namespace OvensManagerApp.Services;
 
 public class OvenDataService
@@ -14,26 +13,30 @@ public class OvenDataService
     private static OvenDataService _instance;
     private static SerialPort _serialPort;
     private static IOwenProtocolMaster _owenProtocolMaster;
+    private static bool _initialized = false;
+    private static readonly object lockObject = new object(); // for thread safe locking
 
-    private OvenDataService()
-    {
-    }
+    private OvenDataService() { }
 
     // Public static method to get the single instance
     public static OvenDataService Instance
     {
         get
         {
-            if (_instance == null)
+            lock (lockObject) // Acquire lock
             {
-                _instance = new OvenDataService();
+                if (_instance == null)
+                {
+                    _instance = new OvenDataService();
+                }
+
+                return _instance;
             }
-            return _instance;
         }
     }
 
     // Initialize the serial port and Modbus master
-    public void Initialize(
+    private static void Initialize(
         int baudRate = 9600,
         Parity parity = Parity.None,
         int dataBits = 8,
@@ -41,13 +44,13 @@ public class OvenDataService
     )
     {
         var builder = new ConfigurationBuilder()
-                                .SetBasePath(AppContext.BaseDirectory)
-                                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
+            .SetBasePath(AppContext.BaseDirectory)
+            .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true);
 
         var configuration = builder.Build();
 
         var config = configuration.GetSection("OvenServiceConfig").Get<OvenServiceConfig>();
-        
+
         if (_serialPort == null)
         {
             // Create and configure the serial port
@@ -56,16 +59,17 @@ public class OvenDataService
             _serialPort.Open();
 
             // Create the OwenProtocolMaster object using SerialPort
-            var owenProtocol = OwenProtocolMaster.Create(new SerialPortAdapter(_serialPort), null);
+            _owenProtocolMaster = OwenProtocolMaster.Create(
+                new SerialPortAdapter(_serialPort),
+                null
+            );
+            _initialized = true;
         }
     }
 
-    private static float GetOvenTemperature(int ovenAddress)
+    public float GetOvenTemperature(int ovenAddress)
     {
-        if (!_serialPort.IsOpen)
-        {
-            _serialPort.Open();
-        }
+        if (!_initialized) { Initialize(); }
 
         // Read data from a device
         byte[] dataFromDevice = _owenProtocolMaster.OwenRead(

@@ -1,17 +1,8 @@
-﻿using OvensManagerApp.Controls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Microsoft.Extensions.Configuration;
+using OvensManagerApp.Models;
+using OvensManagerApp.MyControls;
+using OvensManagerApp.Services;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 using WpfScreenHelper;
 
 namespace OvensManagerApp.Views
@@ -21,10 +12,22 @@ namespace OvensManagerApp.Views
     /// </summary>
     public partial class OvensDashboardWindow : Window
     {
+        private List<Oven> _ovens;
         public OvensDashboardWindow()
         {
             MoveToSecondScreen();
             InitializeComponent();
+            _ovens = LoadOvens();
+            // Assuming OvenCard has a public property `OvenNumber`
+            var ovenCards = new Dictionary<int, OvenCard>();
+
+            foreach (var child in myGrid.Children)
+            {
+                if (child is OvenCard ovenCard)
+                {
+                    ovenCards[ovenCard.OvenNumber] = ovenCard;
+                }
+            }
         }
         private void MoveToSecondScreen()
         {
@@ -56,9 +59,23 @@ namespace OvensManagerApp.Views
             WindowState = WindowState.Maximized;
         }
 
-        public void Start() {
-            MessageBox.Show("Test");
+        public void Start()
+        {
+            foreach (var oven in _ovens)
+            {
+                var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
+
+            }
         }
-        
+        public List<Oven> LoadOvens()
+        {
+            var configuration = new ConfigurationBuilder()
+                .SetBasePath(AppContext.BaseDirectory)
+                .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
+                .Build();
+
+            return configuration.GetSection("Ovens").Get<List<Oven>>() ?? new List<Oven>();
+        }
+
     }
 }

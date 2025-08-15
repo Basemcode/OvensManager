@@ -1,6 +1,6 @@
-using System.IO.Ports;
 using NModbus;
 using NModbus.Serial;
+using System.IO.Ports;
 
 namespace OvensManager;
 
@@ -26,18 +26,18 @@ public partial class MainForm : Form
         while (started)
         {
             OvenInfo ovenInfo0 = await OvenDataService.GetOvenInfo(ovens[0].Address);
-            
-                if (ovenInfo0.Registers != null)
-                {
-                    lblReg0.Text = ovenInfo0.CurrentTemperature.ToString();
-                    lblReg1.Text = ovenInfo0.CurrentProgram.ToString();
-                    lblReg2.Text = ovenInfo0.CurrentStep.ToString();
-                    lblReg3.Text = ovenInfo0.OperatingMode.ToString();
 
-                   
-                }
-            
-            
+            if (ovenInfo0.Registers != null)
+            {
+                lblReg0.Text = ovenInfo0.CurrentTemperature.ToString();
+                lblReg1.Text = ovenInfo0.CurrentProgram.ToString();
+                lblReg2.Text = ovenInfo0.CurrentStep.ToString();
+                lblReg3.Text = ovenInfo0.OperatingMode.ToString();
+
+
+            }
+
+
 
             OvenInfo ovenInfo1 = await OvenDataService.GetOvenInfo(ovens[1].Address);
             try

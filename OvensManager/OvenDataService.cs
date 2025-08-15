@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics.Metrics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace OvensManager;
+﻿namespace OvensManager;
 
 public class OvenDataService
 {
@@ -33,7 +26,7 @@ public class OvenDataService
         ushort[] registers13to14 = [0, 0];
 
         // read next 3 registers
-        ushort[] registers15to17 =await ModbusManager.Instance.ReadInputRegisters(
+        ushort[] registers15to17 = await ModbusManager.Instance.ReadInputRegisters(
             ovenId,
             startAddress,
             numRegisters

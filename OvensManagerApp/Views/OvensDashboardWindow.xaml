@@ -4,7 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OvensManagerApp.Views"
-        xmlns:controls="clr-namespace:OvensManagerApp.Controls"
+        xmlns:myControls="clr-namespace:OvensManagerApp.MyControls"
         mc:Ignorable="d"
         
         ShowInTaskbar="False"
@@ -26,23 +26,23 @@
                 <RowDefinition Height="1*" />
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-
-            <controls:OvenControl Grid.Row = "0" x:Name = "oven1"  OvenNumber= "1"  Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "0" x:Name = "oven2"  OvenNumber= "2"  Grid.Column="1" BackgroundColor="{StaticResource RedGradient}"         OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "0" x:Name = "oven3"  OvenNumber= "3"  Grid.Column="2" BackgroundColor="{StaticResource GreenGradient}"       OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "0" x:Name = "oven4"  OvenNumber= "4"  Grid.Column="3" BackgroundColor="{StaticResource YellowGradient}"      OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "1" x:Name = "oven5"  OvenNumber= "5"  Grid.Column="0" BackgroundColor="{StaticResource BlackGradient}"       OvenFontSize="40.0" FontColor="White"/>
-            <controls:OvenControl Grid.Row = "1" x:Name = "oven6"  OvenNumber= "6"  Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "1" x:Name = "oven7"  OvenNumber= "7"  Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "1" x:Name = "oven8"  OvenNumber= "8"  Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "2" x:Name = "oven9"  OvenNumber= "9"  Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "2" x:Name = "oven10" OvenNumber= "10" Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "2" x:Name = "oven11" OvenNumber= "11" Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "2" x:Name = "oven12" OvenNumber= "12" Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "3" x:Name = "oven13" OvenNumber= "13" Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "3" x:Name = "oven14" OvenNumber= "14" Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "3" x:Name = "oven15" OvenNumber= "15" Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
-            <controls:OvenControl Grid.Row = "3" x:Name = "oven16" OvenNumber= "16" Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            
+            <myControls:OvenCard Grid.Row = "0" x:Name = "oven1"  OvenNumber= "1"  Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "0" x:Name = "oven2"  OvenNumber= "2"  Grid.Column="1" BackgroundColor="{StaticResource RedGradient}"         OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "0" x:Name = "oven3"  OvenNumber= "3"  Grid.Column="2" BackgroundColor="{StaticResource GreenGradient}"       OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "0" x:Name = "oven4"  OvenNumber= "4"  Grid.Column="3" BackgroundColor="{StaticResource YellowGradient}"      OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "1" x:Name = "oven5"  OvenNumber= "5"  Grid.Column="0" BackgroundColor="{StaticResource BlackGradient}"       OvenFontSize="40.0" FontColor="White"/>
+            <myControls:OvenCard Grid.Row = "1" x:Name = "oven6"  OvenNumber= "6"  Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "1" x:Name = "oven7"  OvenNumber= "7"  Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "1" x:Name = "oven8"  OvenNumber= "8"  Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "2" x:Name = "oven9"  OvenNumber= "9"  Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "2" x:Name = "oven10" OvenNumber= "10" Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "2" x:Name = "oven11" OvenNumber= "11" Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "2" x:Name = "oven12" OvenNumber= "12" Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "3" x:Name = "oven13" OvenNumber= "13" Grid.Column="0" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "3" x:Name = "oven14" OvenNumber= "14" Grid.Column="1" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "3" x:Name = "oven15" OvenNumber= "15" Grid.Column="2" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
+            <myControls:OvenCard Grid.Row = "3" x:Name = "oven16" OvenNumber= "16" Grid.Column="3" BackgroundColor="{StaticResource CyanGradient}"        OvenFontSize="40.0" FontColor="Black"/>
 
         </Grid>
     </Border>

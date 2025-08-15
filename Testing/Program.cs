@@ -1,19 +1,16 @@
-﻿using System;
-using System.IO.Ports;
-using System.Reflection;
-using System.Text;
-using OwenioNet;
-using OwenioNet.DataConverter;
+﻿using OwenioNet;
 using OwenioNet.DataConverter.Converter;
 using OwenioNet.IO;
 using OwenioNet.Types;
+using System.IO.Ports;
+using System.Text;
 
 namespace OwenioNetExampleApp;
 
 class Program
 {
     static string filePath = "console_output.txt";
-   
+
     static void Main(string[] args)
     {
         //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
@@ -53,7 +50,7 @@ class Program
             GetTemp(serialPort, writer, 120);
             Thread.Sleep(500);
             GetTemp(serialPort, writer, 128);
-            
+
             Console.WriteLine();
             Thread.Sleep(1000);
         }
@@ -61,7 +58,7 @@ class Program
         //ConvertData();
     }
 
-    private static void GetTemp(SerialPort serialPort,StreamWriter writer, int deviceAddress)
+    private static void GetTemp(SerialPort serialPort, StreamWriter writer, int deviceAddress)
     {
         // Initialize the SerialPort for communication
 

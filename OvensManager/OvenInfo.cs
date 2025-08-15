@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using OvensManager.Enums;
+﻿using OvensManager.Enums;
 
 namespace OvensManager;
 
-public class OvenInfo 
+public class OvenInfo
 {
     public ushort[]? Registers { get; set; } = null;
 
