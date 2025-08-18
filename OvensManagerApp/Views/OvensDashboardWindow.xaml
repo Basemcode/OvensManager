@@ -1,17 +1,23 @@
 ﻿<Window x:Class="OvensManagerApp.Views.OvensDashboardWindow"
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OvensManagerApp.Views"
         xmlns:MyControls="clr-namespace:OvensManagerApp.MyControls"
+        xmlns:interactivity="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:cmd="http://schemas.microsoft.com/expression/2010/interactivity"
         mc:Ignorable="d"
-        
         ShowInTaskbar="False"
         WindowStyle="None"
         Background="Transparent" 
         d:DesignHeight="920" d:DesignWidth="1790"  >
-
+    <i:Interaction.Triggers>
+        <i:EventTrigger EventName="Closed">
+            <i:InvokeCommandAction Command="{Binding WindowClosedCommand}" />
+        </i:EventTrigger>
+    </i:Interaction.Triggers>
     <Border CornerRadius="50" Margin="5">
         <ItemsControl ItemsSource="{Binding Ovens}">
             <ItemsControl.ItemsPanel>
@@ -27,7 +33,8 @@
                         OvenTemperature="{Binding Temperature}"
                         RunTime="{Binding RunTime}"
                         BackgroundColor="{Binding BackgroundColor}"
-                        OvenFontSize="{Binding DashboardFontSize, RelativeSource={RelativeSource AncestorType=Window}}"
+                        OvenFontSize="{Binding DataContext.DashboardFontSize,
+                                        RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                         FontColor="{Binding FontColor}"
                     />
                 </DataTemplate>

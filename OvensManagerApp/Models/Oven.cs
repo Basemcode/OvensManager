@@ -12,4 +12,5 @@ public class Oven
     public Brush FontColor { get; set; }
     public int TargetTemp { get; set; }
     public int OpeningTemp { get; set; }
+    public string Status { get; set; } = "Idle";
 }
