@@ -36,6 +36,16 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
     public RelayCommand<IClosable> WindowClosedCommand { get; set; }
 
 
+    private WindowState _dashboardWindowState;
+
+    public WindowState DashboardWindowState
+    {
+        get { return _dashboardWindowState; }
+        set { _dashboardWindowState = value;
+            OnPropertyChanged();
+        }
+    }
+
     private bool _started;
     public double _dashboardFontSize = 50;
     public double DashboardFontSize
@@ -51,8 +61,10 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
 
     public OvensDashboardWindowViewModel()
     {
+        LoadOvens();
         this.CloseWindowCommand = new RelayCommand<IClosable>(this.CloseWindow);
         _ovens = new ObservableCollection<Oven>(LoadOvens());
+        DashboardWindowState = WindowState.Maximized;
     }
 
 
@@ -61,11 +73,11 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
         _started = true;
         while (_started)
         {
-            foreach (var oven in _ovens)
+            foreach (var oven in Ovens)
             {
-                /*var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
-                ovenCards[oven.Number].OvenTemperature = temperature;
-                ovenCards[oven.Number].RunTime = TimeSpan.FromHours(2);*/
+                var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
+                oven.Temperature = temperature;
+                oven.RunTime = TimeSpan.FromHours(2);
             }
             //delay 5 seconds
             await Task.Delay(1000);

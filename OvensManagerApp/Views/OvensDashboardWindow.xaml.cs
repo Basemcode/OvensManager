@@ -17,6 +17,8 @@ public partial class OvensDashboardWindow : Window
     {
         InitializeComponent();
         this.DataContext = new OvensDashboardWindowViewModel();
+        MoveToSecondScreen();
+        
     }
 
     // TODO: Implement the logic of MVVM

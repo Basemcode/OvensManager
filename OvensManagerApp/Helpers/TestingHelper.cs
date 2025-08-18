@@ -8,6 +8,6 @@ namespace OvensManagerApp.Helpers
 {
     public class TestingHelper
     {
-        public static bool IsDevelop { get; set; } = true;
+        public static bool IsDevelop { get; set; } = false;
     }
 }

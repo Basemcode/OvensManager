@@ -12,8 +12,8 @@ namespace OvensManagerApp;
 
 public partial class MainWindow : Window, INotifyPropertyChanged
 {
-    private OvensDashboardWindowViewModel _dashboard;
-    private static double _dashboardFontSize=50;
+    private OvensDashboardWindowViewModel _dashboardVm;
+    private static double _dashboardFontSize = 50;
     private WindowService _windowService = new WindowService(); 
     public double DashboardFontSize
     {
@@ -38,11 +38,11 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void OpenDashboard_Click(object sender, RoutedEventArgs e)
     {
-        if (_dashboard is null)
+        if (_dashboardVm is null)
         {
-            _dashboard = new OvensDashboardWindowViewModel();
-            _dashboard.WindowClosedCommand = new RelayCommand<IClosable>(this.CloseWindow);
-            _windowService.ShowWindow(_dashboard);
+            _dashboardVm = new OvensDashboardWindowViewModel();
+            _dashboardVm.WindowClosedCommand = new RelayCommand<IClosable>(this.CloseWindow);
+            _windowService.ShowWindow(_dashboardVm);
         }
     }
 
@@ -53,22 +53,22 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void _dashboard_Closed(object? sender, EventArgs e)
     {
-        _dashboard = null;
+        _dashboardVm = null;
     }
 
     private void StartOnDashboard_Click(object sender, RoutedEventArgs e)
     {
-        if (_dashboard != null)
+        if (_dashboardVm != null)
         {
-            _dashboard.Start();
+            _dashboardVm.Start();
         }
     }
 
     private void btnMaximize_Click(object sender, RoutedEventArgs e)
     {
-        if (_dashboard != null)
+        if (_dashboardVm != null)
         {
-            throw new NotImplementedException();
+            _dashboardVm.DashboardWindowState = WindowState.Maximized;
             //_dashboard.MaximizeWindow();
         }
     }
@@ -76,20 +76,20 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     private void btnIncreaseFontSize_Click(object sender, RoutedEventArgs e)
     {
         // set the font size
-        if (DashboardFontSize < 70 && _dashboard is not null)
+        if (DashboardFontSize < 70 && _dashboardVm is not null)
         {
-            _dashboard.DashboardFontSize += 10;
-            DashboardFontSize = _dashboard.DashboardFontSize;
+            _dashboardVm.DashboardFontSize += 10;
+            DashboardFontSize = _dashboardVm.DashboardFontSize;
         }
     }
 
     private void btnDecreaseFontSize_Click(object sender, RoutedEventArgs e)
     {
         // set the font size
-        if (DashboardFontSize>10 && _dashboard is not null)
+        if (DashboardFontSize>10 && _dashboardVm is not null)
         {
-            _dashboard.DashboardFontSize -= 10;
-            DashboardFontSize = _dashboard.DashboardFontSize;
+            _dashboardVm.DashboardFontSize -= 10;
+            DashboardFontSize = _dashboardVm.DashboardFontSize;
         }
        
     }

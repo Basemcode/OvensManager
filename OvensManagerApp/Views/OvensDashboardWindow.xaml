@@ -11,6 +11,7 @@
         mc:Ignorable="d"
         ShowInTaskbar="False"
         WindowStyle="None"
+        WindowState="{Binding DashboardWindowState}"
         Background="Transparent" 
         d:DesignHeight="920" d:DesignWidth="1790"  >
     <i:Interaction.Triggers>
