@@ -54,7 +54,7 @@ public class OvenDataService
         if (_serialPort == null)
         {
             // Create and configure the serial port
-            _serialPort = new SerialPort(config.PortName, baudRate, parity, dataBits, stopBits);
+            _serialPort = new SerialPort(config?.PortName, baudRate, parity, dataBits, stopBits);
             _serialPort.ReadTimeout = 1000; // in millisecond
             _serialPort.Open();
 
@@ -69,18 +69,27 @@ public class OvenDataService
 
     public float GetOvenTemperature(int ovenAddress)
     {
+        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(50, 760); }
         if (!_initialized) { Initialize(); }
 
         // Read data from a device
+        try
+        {
         byte[] dataFromDevice = _owenProtocolMaster.OwenRead(
             ovenAddress,
             AddressLengthType.Bits8,
             "read"
         );
+        
 
         // Convert the data from the device to a float value
         var converterFloat = new ConverterFloatTimestamp();
         var valueFromDevice = converterFloat.ConvertBack(dataFromDevice);
         return valueFromDevice.Value;
+        }
+        catch (Exception)
+        {
+            throw new InvalidOperationException("Failed to read oven temperature. Please check the connection and configuration.");
+        }
     }
 }

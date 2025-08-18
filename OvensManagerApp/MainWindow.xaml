@@ -10,7 +10,7 @@
         WindowStartupLocation="Manual" 
         Background="White" 
         Height="325" 
-        Width="530" >
+        Width="530" Closing="Window_Closing" >
     <Border CornerRadius="50" Margin="4">
         <Grid >
             <StackPanel Orientation="Vertical" >
@@ -33,14 +33,31 @@
                     </Button.Resources>
                 </Button>
 
-                <Button Content="Maximize" Width="150" Height="50" Margin="10" Click="Button_Click">
+                <Button x:Name="btnMaximize" Content="Maximize" Width="150" Height="50" Margin="10" Click="btnMaximize_Click">
                     <Button.Resources>
                         <Style TargetType="Border">
                             <Setter Property="CornerRadius" Value="5"/>
                         </Style>
                     </Button.Resources>
                 </Button>
-                
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Размер шрифта" VerticalAlignment="Center" ></TextBlock>
+                    <Button Content="+" Width="20" Height="20" Margin="10" Click="btnIncreaseFontSize_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+                    <TextBlock Text="{Binding DashboardFontSize,RelativeSource={RelativeSource AncestorType=Window}}" VerticalAlignment="Center"></TextBlock>  
+                    <Button Content="-" Width="20" Height="20" Margin="10" Click="btnDecreaseFontSize_Click">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="5"/>
+                        </Style>
+                    </Button.Resources>
+                </Button>
+            </StackPanel>
             </StackPanel>
         </Grid>
     </Border>

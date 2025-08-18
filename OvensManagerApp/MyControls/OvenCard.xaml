@@ -6,20 +6,45 @@
              xmlns:local="clr-namespace:OvensManagerApp.MyControls" 
              mc:Ignorable="d" 
              d:DesignHeight="150"
-             d:DesignWidth="200" >
+             d:DesignWidth="200">
 
+    <Border CornerRadius="20" 
+            Background="{Binding BackgroundColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"  
+            BorderBrush="Gray" 
+            BorderThickness="2" 
+            Margin="0.5">
 
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+                <RowDefinition Height="1*" />
+            </Grid.RowDefinitions>
 
-    <Border CornerRadius="20" Background="{Binding BackgroundColor}"  BorderBrush="Gray" BorderThickness="2" Margin="0.5">
-        <Grid >
-        <Grid.RowDefinitions>
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-            <RowDefinition Height="1*" />
-        </Grid.RowDefinitions>
-            <TextBlock x:Name="Number" Foreground="{Binding FontColor}"  FontSize="{Binding OvenFontSize}" Grid.Row="0" HorizontalAlignment="Center"  Text="{Binding OvenNumber, StringFormat=Печь № {0}}" VerticalAlignment="Center" />
-            <TextBlock x:Name="Temperature" Foreground="{Binding FontColor}" FontSize="{Binding OvenFontSize}" Grid.Row="1" HorizontalAlignment="Center"  Text="{Binding OvenTemperature}" VerticalAlignment="Center" />
-            <TextBlock x:Name="Time" Foreground="{Binding FontColor}" FontSize="{Binding OvenFontSize}" Grid.Row="2" HorizontalAlignment="Center"  Text="{Binding RunTime}" VerticalAlignment="Center" />
+            <!-- Oven Number -->
+            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                       Grid.Row="0" 
+                       HorizontalAlignment="Center"  
+                       Text="{Binding OvenNumber, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat=Печь № {0}}" 
+                       VerticalAlignment="Center" />
+
+            <!-- Temperature -->
+            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                       Grid.Row="1" 
+                       HorizontalAlignment="Center"  
+                       Text="{Binding OvenTemperature, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat={}{0:0.0} °C}" 
+                       VerticalAlignment="Center" />
+
+            <!-- Run Time -->
+            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                       Grid.Row="2" 
+                       HorizontalAlignment="Center"  
+                       Text="{Binding RunTime, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat={}{0:c}}" 
+                       VerticalAlignment="Center" />
+
         </Grid>
-   </Border>
+    </Border>
 </UserControl>
