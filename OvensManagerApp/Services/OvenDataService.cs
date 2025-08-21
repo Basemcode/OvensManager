@@ -87,9 +87,64 @@ public class OvenDataService
         var valueFromDevice = converterFloat.ConvertBack(dataFromDevice);
         return valueFromDevice.Value;
         }
-        catch (Exception)
+        catch (Exception e)
         {
+            Console.WriteLine("Failed to read oven Temperature. Please check the connection and configuration. " + e.Message);
             throw new InvalidOperationException("Failed to read oven temperature. Please check the connection and configuration.");
+        }
+    }
+
+    public int GetOvenOperatingMode(int ovenAddress)
+    {
+        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(0, 7); }
+        if (!_initialized) { Initialize(); }
+
+        // Read data from a device
+        try
+        {
+            byte[] dataFromDevice = _owenProtocolMaster.OwenRead(
+                ovenAddress,
+                AddressLengthType.Bits8,
+                "r.St"
+            );
+
+
+            // Convert the data from the device to a int value
+            var converterU = new ConverterU(2);
+            var valueFromDevice = converterU.ConvertBack(dataFromDevice);
+            return (int)valueFromDevice;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed to read oven Operating Mode. Please check the connection and configuration. "+e.Message);
+            throw new InvalidOperationException("Failed to read oven Operating Mode. Please check the connection and configuration.");
+        }
+    }
+
+    public int GetOvenStepOfProgram(int ovenAddress)
+    {
+        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(1, 5); }
+        if (!_initialized) { Initialize(); }
+
+        // Read data from a device
+        try
+        {
+            byte[] dataFromDevice = _owenProtocolMaster.OwenRead(
+                ovenAddress,
+                AddressLengthType.Bits8,
+                "r.StP"
+            );
+
+
+            // Convert the data from the device to a int value
+            var converterU = new ConverterU(2);
+            var valueFromDevice = converterU.ConvertBack(dataFromDevice);
+            return (int)valueFromDevice;
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine("Failed to read oven Step of program. Please check the connection and configuration. " + e.Message);
+            throw new InvalidOperationException("Failed to read oven Step of program. Please check the connection and configuration.");
         }
     }
 }

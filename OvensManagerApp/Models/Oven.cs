@@ -15,60 +15,108 @@ public class Oven : INotifyPropertyChanged
     private Brush _fontColor = new SolidColorBrush(Colors.Black);
     private int _targetTemp;
     private int _openingTemp;
-    private string _status = "Idle";
+    private string _ovenStatus = "Idle";
 
     public int Number
     {
         get => _number;
-        set { _number = value; OnPropertyChanged(); }
+        set
+        {
+            _number = value;
+            OnPropertyChanged();
+        }
     }
 
     public byte Address
     {
         get => _address;
-        set { _address = value; OnPropertyChanged(); }
+        set
+        {
+            _address = value;
+            OnPropertyChanged();
+        }
     }
 
     public float Temperature
     {
         get => _temperature;
-        set { _temperature = value; OnPropertyChanged(); }
+        set
+        {
+            _temperature = value;
+            OnPropertyChanged();
+        }
     }
 
     public TimeSpan RunTime
     {
         get => _runTime;
-        set { _runTime = value; OnPropertyChanged(); }
+        set
+        {
+            _runTime = value;
+            OnPropertyChanged();
+        }
     }
 
     public Brush BackgroundColor
     {
         get => _backgroundColor;
-        set { _backgroundColor = value; OnPropertyChanged(); }
+        set
+        {
+            _backgroundColor = value;
+            OnPropertyChanged();
+        }
     }
 
     public Brush FontColor
     {
         get => _fontColor;
-        set { _fontColor = value; OnPropertyChanged(); }
+        set
+        {
+            _fontColor = value;
+            OnPropertyChanged();
+        }
     }
 
     public int TargetTemp
     {
         get => _targetTemp;
-        set { _targetTemp = value; OnPropertyChanged(); }
+        set
+        {
+            _targetTemp = value;
+            OnPropertyChanged();
+        }
     }
 
     public int OpeningTemp
     {
         get => _openingTemp;
-        set { _openingTemp = value; OnPropertyChanged(); }
+        set
+        {
+            _openingTemp = value;
+            OnPropertyChanged();
+        }
     }
 
-    public string Status
+    public string OvenStatus
     {
-        get => _status;
-        set { _status = value; OnPropertyChanged(); }
+        get => _ovenStatus;
+        set
+        {
+            _ovenStatus = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private int _stepOfProgram;
+
+    public int StepOfProgram
+    {
+        get { return _stepOfProgram; }
+        set
+        {
+            _stepOfProgram = value;
+            OnPropertyChanged();
+        }
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

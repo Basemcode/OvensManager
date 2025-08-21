@@ -14,6 +14,8 @@ using WpfScreenHelper;
 using OvensManagerApp.Services;
 using CommunityToolkit.Mvvm.Input;
 using OvensManagerApp.Interfaces;
+using System.Windows.Media;
+using OvensManagerApp.Enums;
 
 namespace OvensManagerApp.ViewModels;
 
@@ -75,12 +77,52 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
         {
             foreach (var oven in Ovens)
             {
-                var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
-                oven.Temperature = temperature;
+                try
+                {
+                    var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
+                    oven.Temperature = temperature;
+                    Console.WriteLine(oven.Number+" : " + oven.Temperature);
+
+                    var operationMode = OvenDataService.Instance.GetOvenOperatingMode(oven.Address);
+                    oven.OvenStatus = Enum.GetName(typeof(OperatingModes), operationMode);
+                    Console.WriteLine(oven.Number + " : " + oven.OvenStatus);
+
+                    var stepOfProgram = OvenDataService.Instance.GetOvenStepOfProgram(oven.Address);
+                    oven.StepOfProgram = stepOfProgram;
+                    Console.WriteLine(oven.Number + " : " + oven.StepOfProgram);
+
+                    if ((oven.OvenStatus == "Working" || oven.OvenStatus == "ProgramIsCompleted") && temperature < 760)
+                    {
+                        Brush appBrush = (Brush)Application.Current.FindResource("RedGradient");
+                        oven.BackgroundColor = appBrush;
+                    }
+                    if ((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted") && temperature < 430 )
+                    {
+                        Brush appBrush = (Brush)Application.Current.FindResource("GreenGradient");
+                        oven.BackgroundColor = appBrush;
+                    }
+
+                    if ((oven.OvenStatus == "Working" && oven.StepOfProgram == 2)
+                        ||((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted") &&( oven.StepOfProgram == 1 || oven.StepOfProgram == 5) && temperature > 430 && temperature < 760))
+                    {
+                        Brush appBrush = (Brush)Application.Current.FindResource("YellowGradient");
+                        oven.BackgroundColor = appBrush;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"Error reading data from oven {oven.Address}. " + e.Message);
+                    oven.OvenStatus = "No Connection!"; 
+                    oven.BackgroundColor= Brushes.Black; // Indicate error with Black color
+                    oven.FontColor = Brushes.White; // Set font color to white for better visibility
+
+                }
+                
                 oven.RunTime = TimeSpan.FromHours(2);
+                await Task.Delay(50);
             }
             //delay 5 seconds
-            await Task.Delay(1000);
+            await Task.Delay(5000);
 
         }
     }

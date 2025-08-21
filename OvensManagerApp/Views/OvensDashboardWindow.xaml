@@ -32,6 +32,8 @@
                     <MyControls:OvenCard
                         OvenNumber="{Binding Number}"
                         OvenTemperature="{Binding Temperature}"
+                        OvenStatus="{Binding OvenStatus}"
+                        StepOfProgram="{Binding StepOfProgram}"
                         RunTime="{Binding RunTime}"
                         BackgroundColor="{Binding BackgroundColor}"
                         OvenFontSize="{Binding DataContext.DashboardFontSize,

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using OvensManagerApp.Helpers;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
@@ -21,6 +22,14 @@ public partial class OvenCard : UserControl
     public static readonly DependencyProperty OvenNumberProperty =
         DependencyProperty.Register(nameof(OvenNumber), typeof(int), typeof(OvenCard), new PropertyMetadata(0));
 
+    public int StepOfProgram
+    {
+        get => (int)GetValue(StepOfProgramProperty);
+        set => SetValue(StepOfProgramProperty, value);
+    }
+    public static readonly DependencyProperty StepOfProgramProperty =
+        DependencyProperty.Register(nameof(StepOfProgram), typeof(int), typeof(OvenCard), new PropertyMetadata(-1));
+
     public float OvenTemperature
     {
         get => (float)GetValue(OvenTemperatureProperty);
@@ -36,6 +45,18 @@ public partial class OvenCard : UserControl
     }
     public static readonly DependencyProperty OvenStatusProperty =
         DependencyProperty.Register(nameof(OvenStatus), typeof(string), typeof(OvenCard), new PropertyMetadata(string.Empty));
+
+    public string OvenStatusInRus
+    {
+        get
+        {
+            return LanguageHelper.OperatingModesInRus[(string)GetValue(OvenStatusProperty)];
+        }
+
+        // set => SetValue(OvenStatusInRusProperty, value);
+    }
+    public static readonly DependencyProperty OvenStatusInRusProperty =
+        DependencyProperty.Register(nameof(OvenStatusInRus), typeof(string), typeof(OvenCard), new PropertyMetadata(string.Empty));
 
     public TimeSpan RunTime
     {
