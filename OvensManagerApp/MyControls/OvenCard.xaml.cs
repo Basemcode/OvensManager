@@ -64,7 +64,7 @@ public partial class OvenCard : UserControl
         set => SetValue(RunTimeProperty, value);
     }
     public static readonly DependencyProperty RunTimeProperty =
-        DependencyProperty.Register(nameof(RunTime), typeof(TimeSpan), typeof(OvenCard), new PropertyMetadata(TimeSpan.MinValue));
+        DependencyProperty.Register(nameof(RunTime), typeof(TimeSpan), typeof(OvenCard), new PropertyMetadata(TimeSpan.Zero));
 
     public Brush BackgroundColor
     {

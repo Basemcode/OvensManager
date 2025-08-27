@@ -16,6 +16,7 @@ public class Oven : INotifyPropertyChanged
     private int _targetTemp;
     private int _openingTemp;
     private string _ovenStatus = "Idle";
+    
 
     public int Number
     {
@@ -117,6 +118,19 @@ public class Oven : INotifyPropertyChanged
             _stepOfProgram = value;
             OnPropertyChanged();
         }
+    }
+
+    private DateTime _statusStartTime;
+
+    public void ResetTimer()
+    {
+        _statusStartTime = DateTime.Now;
+        RunTime = TimeSpan.Zero;
+    }
+
+    public void UpdateRuntime()
+    {
+        RunTime = DateTime.Now - _statusStartTime;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

@@ -1,10 +1,11 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using System.IO.Ports;
+using Microsoft.Extensions.Configuration;
 using OvensManagerApp.Configuration;
+using OvensManagerApp.Helpers;
 using OwenioNet;
 using OwenioNet.DataConverter.Converter;
 using OwenioNet.IO;
 using OwenioNet.Types;
-using System.IO.Ports;
 
 namespace OvensManagerApp.Services;
 
@@ -69,35 +70,51 @@ public class OvenDataService
 
     public float GetOvenTemperature(int ovenAddress)
     {
-        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(50, 760); }
-        if (!_initialized) { Initialize(); }
+        if (Helpers.TestingHelper.IsDevelop)
+        {
+            return TestingHelper.GetTestingTemperature();
+        }
+        if (!_initialized)
+        {
+            Initialize();
+        }
 
         // Read data from a device
         try
         {
-        byte[] dataFromDevice = _owenProtocolMaster.OwenRead(
-            ovenAddress,
-            AddressLengthType.Bits8,
-            "read"
-        );
-        
+            byte[] dataFromDevice = _owenProtocolMaster.OwenRead(
+                ovenAddress,
+                AddressLengthType.Bits8,
+                "read"
+            );
 
-        // Convert the data from the device to a float value
-        var converterFloat = new ConverterFloatTimestamp();
-        var valueFromDevice = converterFloat.ConvertBack(dataFromDevice);
-        return valueFromDevice.Value;
+            // Convert the data from the device to a float value
+            var converterFloat = new ConverterFloatTimestamp();
+            var valueFromDevice = converterFloat.ConvertBack(dataFromDevice);
+            return valueFromDevice.Value;
         }
         catch (Exception e)
         {
-            Console.WriteLine("Failed to read oven Temperature. Please check the connection and configuration. " + e.Message);
-            throw new InvalidOperationException("Failed to read oven temperature. Please check the connection and configuration.");
+            Console.WriteLine(
+                "Failed to read oven Temperature. Please check the connection and configuration. "
+                    + e.Message
+            );
+            throw new InvalidOperationException(
+                "Failed to read oven temperature. Please check the connection and configuration. " + e.Message
+            );
         }
     }
 
     public int GetOvenOperatingMode(int ovenAddress)
     {
-        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(0, 7); }
-        if (!_initialized) { Initialize(); }
+        if (Helpers.TestingHelper.IsDevelop)
+        {
+            return TestingHelper.GetTestingOperatingMode();
+        }
+        if (!_initialized)
+        {
+            Initialize();
+        }
 
         // Read data from a device
         try
@@ -108,7 +125,6 @@ public class OvenDataService
                 "r.St"
             );
 
-
             // Convert the data from the device to a int value
             var converterU = new ConverterU(2);
             var valueFromDevice = converterU.ConvertBack(dataFromDevice);
@@ -116,15 +132,26 @@ public class OvenDataService
         }
         catch (Exception e)
         {
-            Console.WriteLine("Failed to read oven Operating Mode. Please check the connection and configuration. "+e.Message);
-            throw new InvalidOperationException("Failed to read oven Operating Mode. Please check the connection and configuration.");
+            Console.WriteLine(
+                "Failed to read oven Operating Mode. Please check the connection and configuration. "
+                    + e.Message
+            );
+            throw new InvalidOperationException(
+                "Failed to read oven Operating Mode. Please check the connection and configuration. " + e.Message
+            );
         }
     }
 
     public int GetOvenStepOfProgram(int ovenAddress)
     {
-        if (Helpers.TestingHelper.IsDevelop) { return Random.Shared.Next(1, 5); }
-        if (!_initialized) { Initialize(); }
+        if (Helpers.TestingHelper.IsDevelop)
+        {
+            return TestingHelper.GetTestingStepOfProgram();
+        }
+        if (!_initialized)
+        {
+            Initialize();
+        }
 
         // Read data from a device
         try
@@ -135,7 +162,6 @@ public class OvenDataService
                 "r.StP"
             );
 
-
             // Convert the data from the device to a int value
             var converterU = new ConverterU(2);
             var valueFromDevice = converterU.ConvertBack(dataFromDevice);
@@ -143,8 +169,13 @@ public class OvenDataService
         }
         catch (Exception e)
         {
-            Console.WriteLine("Failed to read oven Step of program. Please check the connection and configuration. " + e.Message);
-            throw new InvalidOperationException("Failed to read oven Step of program. Please check the connection and configuration.");
+            Console.WriteLine(
+                "Failed to read oven Step of program. Please check the connection and configuration. "
+                    + e.Message
+            );
+            throw new InvalidOperationException(
+                "Failed to read oven Step of program. Please check the connection and configuration. " + e.Message
+            );
         }
     }
 }
