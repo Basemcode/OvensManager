@@ -22,7 +22,6 @@
 
   <ItemGroup>
     <Folder Include="Assets\Images\" />
-    <Folder Include="MVVM\" />
 	  <Folder Include="MyControls\" />
   </ItemGroup>
 

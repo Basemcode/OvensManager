@@ -5,13 +5,14 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Threading;
 using OvensManagerApp.Enums;
+using OwenioNet.Types;
 
 namespace OvensManagerApp.Helpers;
 
 public class TestingHelper
 {
-    public static bool IsDevelop { get; set; } = true;
-    public static int TestingTimerInterval { get; set; } = 100; // in milliseconds
+    public static bool IsDevelop { get; set; } = false;
+    public static int TestingTimerInterval { get; set; } = 1000; // in milliseconds
 }
 
 public static class VirtualDataGenerator
@@ -21,21 +22,21 @@ public static class VirtualDataGenerator
     {
         // Oven address and temperature
         { 8*1, new VirtualOvenStatus(){Temperature= 10.0f , _isRising = true  } },
-        { 8*2, new VirtualOvenStatus(){Temperature= 50.2f , _isRising = true  } },
+        { 8*2, new VirtualOvenStatus(){Temperature= 50.2f , _isRising = false  } },
         { 8*3, new VirtualOvenStatus(){Temperature= 120.5f, _isRising = true  } },
         { 8*4, new VirtualOvenStatus(){Temperature= 170.8f, _isRising = false  } },
-        { 8*5, new VirtualOvenStatus(){Temperature= 210.3f, _isRising = false  } },
+        { 8*5, new VirtualOvenStatus(){Temperature= 210.3f, _isRising = true  } },
         { 8*6, new VirtualOvenStatus(){Temperature= 240.1f, _isRising = false  } },
-        { 8*7, new VirtualOvenStatus(){Temperature= 270.7f, _isRising = false  } },
-        { 8*8, new VirtualOvenStatus(){Temperature= 310.6f, _isRising = true  } },
+        { 8*7, new VirtualOvenStatus(){Temperature= 270.7f, _isRising = true   } },
+        { 8*8, new VirtualOvenStatus(){Temperature= 310.6f, _isRising = false } },
         { 8*9, new VirtualOvenStatus(){Temperature= 350.9f, _isRising = true  } },
-        { 8*10,new VirtualOvenStatus(){Temperature= 390.0f, _isRising = true  } },
+        { 8*10,new VirtualOvenStatus(){Temperature= 390.0f, _isRising = false } },
         { 8*11,new VirtualOvenStatus(){Temperature= 430.8f, _isRising = true  } },
         { 8*12,new VirtualOvenStatus(){Temperature= 470.2f, _isRising = false  } },
-        { 8*13,new VirtualOvenStatus(){Temperature= 510.6f, _isRising = false  } },
+        { 8*13,new VirtualOvenStatus(){Temperature= 510.6f, _isRising = true   } },
         { 8*14,new VirtualOvenStatus(){Temperature= 550.4f, _isRising = false  } },
-        { 8*15,new VirtualOvenStatus(){Temperature= 600.1f, _isRising = false  } },
-        { 8*16,new VirtualOvenStatus(){Temperature= 650.7f, _isRising = true  } },
+        { 8*15,new VirtualOvenStatus(){Temperature= 600.1f, _isRising = true   } },
+        { 8*16,new VirtualOvenStatus(){Temperature= 650.7f, _isRising = false } },
     };
 
     struct VirtualOvenStatus
@@ -144,19 +145,30 @@ public static class VirtualDataGenerator
         }
     }
 
-    public static int GetTestingOperatingMode(int oven)
+
+    public static async Task<int> GetTestingOperatingModeAsync(int oven)
     {
         if (_isStarted)
         {
-            Thread.Sleep(10);
-            return (int)_ovensData[oven]._status;
+            var dataFromDevice = await Task.Run(() =>
+            {
+                var reveivedData = (int)_ovensData[oven]._status;
+                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " Data: " + reveivedData);
+                Thread.Sleep(50); // Simulate some delay
+                return reveivedData;
+            });
+            
+            return dataFromDevice;
         }
         else
         {
+            // Start asynchronously and return after the delay
             Start(TestingHelper.TestingTimerInterval);
+            await Task.Delay(100); // Asynchronously wait for 100ms
             return (int)_ovensData[oven]._status;
         }
     }
+
 
     internal static int GetTestingStepOfProgram(int oven)
     {
