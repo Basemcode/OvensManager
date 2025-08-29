@@ -1,33 +1,22 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.Configuration;
+using OvensManagerApp.Enums;
+using OvensManagerApp.Interfaces;
 using OvensManagerApp.Models;
-using OvensManagerApp.MyControls;
-using System;
-using System.Collections.Generic;
+using OvensManagerApp.Resources;
+using OvensManagerApp.Services;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Media3D;
 using System.Windows;
-using WpfScreenHelper;
-using OvensManagerApp.Services;
-using CommunityToolkit.Mvvm.Input;
-using OvensManagerApp.Interfaces;
 using System.Windows.Media;
-using OvensManagerApp.Enums;
 using System.Windows.Threading;
 
 namespace OvensManagerApp.ViewModels;
 
-public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChanged,IClosable
+public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChanged, IClosable
 {
-    private DispatcherTimer _timer; // Timer for updating oven runtime
-
-    // Brushes for ovenCard background
-    static Brush redBrush = (Brush)Application.Current.FindResource("RedGradient");
-    static Brush greenBrush = (Brush)Application.Current.FindResource("GreenGradient");
-    static Brush yellowBrush = (Brush)Application.Current.FindResource("YellowGradient");
+    private DispatcherTimer _runTimeTimer; // Timer for updating oven runtime
+    private DispatcherTimer _dataUpdatingTimer; // Timer for updating oven runtime
 
     private ObservableCollection<Oven> _ovens;
 
@@ -45,19 +34,22 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
     public RelayCommand<IClosable> CloseWindowCommand { get; private set; }
     public RelayCommand<IClosable> WindowClosedCommand { get; set; }
 
-
     private WindowState _dashboardWindowState;
 
     public WindowState DashboardWindowState
     {
         get { return _dashboardWindowState; }
-        set { _dashboardWindowState = value;
+        set
+        {
+            _dashboardWindowState = value;
             OnPropertyChanged();
         }
     }
 
     private bool _started;
     public double _dashboardFontSize = 50;
+    private int infoRequestDelayTime = 1000;
+
     public double DashboardFontSize
     {
         get { return _dashboardFontSize; }
@@ -68,7 +60,6 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
         }
     }
 
-
     public OvensDashboardWindowViewModel()
     {
         LoadOvens();
@@ -76,15 +67,15 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
         _ovens = new ObservableCollection<Oven>(LoadOvens());
         DashboardWindowState = WindowState.Maximized;
 
-        StartTimer();
+        StartRunTimeTimer();
     }
 
-    private void StartTimer()
+    private void StartRunTimeTimer()
     {
         // Setup timer
-        _timer = new DispatcherTimer();
-        _timer.Interval = TimeSpan.FromSeconds(1); // update every second
-        _timer.Tick += (s, e) =>
+        _runTimeTimer = new DispatcherTimer();
+        _runTimeTimer.Interval = TimeSpan.FromSeconds(1); // update every second
+        _runTimeTimer.Tick += (s, e) =>
         {
             foreach (var oven in Ovens)
             {
@@ -97,77 +88,151 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
             oven.ResetTimer();
         }
 
-        _timer.Start();
+        _runTimeTimer.Start();
     }
 
-    public async void Start()
+    public void StartDataUpdatingTimer()
     {
-        _started = true;
-        while (_started)
+        // Setup timer
+        _dataUpdatingTimer = new DispatcherTimer();
+        _dataUpdatingTimer.Interval = TimeSpan.FromMilliseconds(infoRequestDelayTime); // update every second
+        _dataUpdatingTimer.Tick += (s, e) =>
         {
+            if (_started == false)
+            {
+                _dataUpdatingTimer.Stop();
+            }
+            UpdateOvensData();
+        };
+        _started = true;
+
+
+        _dataUpdatingTimer.Start();
+    }
+
+    public async void UpdateOvensData()
+    { 
             foreach (var oven in Ovens)
             {
                 try
                 {
                     var temperature = OvenDataService.Instance.GetOvenTemperature(oven.Address);
                     oven.Temperature = temperature;
-                    Console.WriteLine(oven.Number+" : " + oven.Temperature);
+                    Console.WriteLine(
+                        DateTime.Now.ToShortTimeString()
+                            + " "
+                            + oven.Number
+                            + " : "
+                            + oven.Temperature
+                    );
 
                     var operationMode = OvenDataService.Instance.GetOvenOperatingMode(oven.Address);
                     oven.OvenStatus = Enum.GetName(typeof(OperatingModes), operationMode);
-                    Console.WriteLine(oven.Number + " : " + oven.OvenStatus);
+                    Console.WriteLine(
+                        DateTime.Now.ToShortTimeString()
+                            + " "
+                            + oven.Number
+                            + " : "
+                            + oven.OvenStatus
+                    );
 
                     var stepOfProgram = OvenDataService.Instance.GetOvenStepOfProgram(oven.Address);
                     oven.StepOfProgram = stepOfProgram;
-                    Console.WriteLine(oven.Number + " : " + oven.StepOfProgram);
+                    Console.WriteLine(
+                        DateTime.Now.ToShortTimeString()
+                            + " "
+                            + oven.Number
+                            + " : "
+                            + oven.StepOfProgram
+                    );
 
-                    if (oven.OvenStatus == "Working" && temperature < 760 && oven.StepOfProgram == 1)
+                    if (
+                        oven.OvenStatus == "Working"
+                        && temperature <= 900
+                        && oven.StepOfProgram == 1
+                    )
                     {
-                        if (oven.BackgroundColor != redBrush)
+                        if (
+                            oven.BackgroundColor != ResourcesHelper.redBrush
+                            || oven.CycleStep != CycleSteps.Heating
+                        )
                         {
-                            oven.BackgroundColor = redBrush;
+                            oven.CycleStep = CycleSteps.Heating;
+                            oven.BackgroundColor = ResourcesHelper.redBrush;
+                            oven.FontColor = Brushes.Black;
                             oven.ResetTimer();
                         }
                     }
 
-                    if ((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted") && temperature < 430 )
+                    if ((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted"))
                     {
-                        if (oven.BackgroundColor != greenBrush)
+                        if (temperature <= 70)
                         {
-                            oven.BackgroundColor = greenBrush;
-                            oven.ResetTimer();
+                            if (
+                                oven.BackgroundColor != ResourcesHelper.blueBrush
+                                || oven.CycleStep != CycleSteps.ReadytoUnload
+                            )
+                            {
+                                oven.CycleStep = CycleSteps.ReadytoUnload;
+                                oven.BackgroundColor = ResourcesHelper.blueBrush;
+                                oven.FontColor = Brushes.Black ;
+                                oven.ResetTimer();
+                            }
+                        }else
+                        if (temperature < 430)
+                        {
+                            if (
+                                oven.BackgroundColor != ResourcesHelper.greenBrush
+                                || oven.CycleStep != CycleSteps.CanOpen
+                            )
+                            {
+                                oven.CycleStep = CycleSteps.CanOpen;
+                                oven.BackgroundColor = ResourcesHelper.greenBrush;
+                                oven.FontColor = Brushes.Black;
+                                SoundService.Instance.PlaySound(SoundsList.OvenCanBeOpened);
+                                oven.ResetTimer();
+                            }
                         }
+                        
                     }
 
-                    if (  (oven.OvenStatus == "Working" && oven.StepOfProgram == 2)
-                        ||((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted") 
-                        &&( oven.StepOfProgram == 1 || oven.StepOfProgram == 5) 
-                        && temperature > 430 && temperature < 760))
+                    if (
+                        (oven.OvenStatus == "Working" && oven.StepOfProgram == 2)
+                        || (
+                            (
+                                oven.OvenStatus == "Stopped"
+                                || oven.OvenStatus == "ProgramIsCompleted"
+                            )
+                            && (oven.StepOfProgram == 1 || oven.StepOfProgram == 5)
+                            && temperature > 430
+                            && temperature < 760
+                        )
+                    )
                     {
-                        if (oven.BackgroundColor != yellowBrush)
+                        if (
+                            oven.BackgroundColor != ResourcesHelper.yellowBrush
+                            || oven.CycleStep != CycleSteps.CoolingDown
+                        )
                         {
-                            oven.BackgroundColor = yellowBrush;
+                            oven.CycleStep = CycleSteps.CoolingDown;
+                            oven.BackgroundColor = ResourcesHelper.yellowBrush;
+                            oven.FontColor = Brushes.Black;
                             oven.ResetTimer();
                         }
                     }
                 }
                 catch (Exception e)
                 {
+                    throw new Exception(e.Message);
                     Console.WriteLine($"Error reading data from oven {oven.Address}. " + e.Message);
-                    oven.OvenStatus = "No Connection!"; 
-                    oven.BackgroundColor= Brushes.Black; // Indicate error with Black color
+                    oven.OvenStatus = "No Connection!";
+                    oven.BackgroundColor = ResourcesHelper.blackBrush; // Indicate error with Black color
                     oven.FontColor = Brushes.White; // Set font color to white for better visibility
-
                 }
 
                 await Task.Delay(50);
-            }
-            //delay 5 seconds
-            await Task.Delay(5000);
-
         }
     }
-
 
     public List<Oven> LoadOvens()
     {
@@ -178,8 +243,6 @@ public class OvensDashboardWindowViewModel: ViewModelBase, INotifyPropertyChange
 
         return configuration.GetSection("Ovens").Get<List<Oven>>() ?? new List<Oven>();
     }
-
-
 
     private void CloseWindow(IClosable window)
     {

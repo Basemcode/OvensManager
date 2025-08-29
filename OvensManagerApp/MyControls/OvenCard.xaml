@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="OvensManagerApp.MyControls.OvenCard"
+﻿<UserControl x:Class="OvensManagerApp.MyControls.OvenCard" 
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -8,57 +8,82 @@
              d:DesignHeight="150"
              d:DesignWidth="200">
 
-    <Border CornerRadius="20" 
-            Background="{Binding BackgroundColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"  
-            BorderBrush="Gray" 
-            BorderThickness="2" 
-            Margin="0.5">
+    <UserControl.Resources>
+        <!-- Flashing animation to animate the opacity of the overlay -->
+        <Storyboard x:Key="FlashBackgroundStoryboard" AutoReverse="True" RepeatBehavior="Forever">
+            <DoubleAnimation
+                Storyboard.TargetName="flashOverlay"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:0.5"/>
+            <DoubleAnimation
+                Storyboard.TargetName="flashingNumber"
+                Storyboard.TargetProperty="Opacity"
+                From="0" To="1" Duration="0:0:0.5"/>
+        </Storyboard>
+    </UserControl.Resources>
 
+    <Grid>
+        <!-- Original background with LinearGradientBrush -->
+        <Border x:Name="border" 
+                CornerRadius="20" 
+                Background="{Binding BackgroundColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"  
+                BorderBrush="Gray" 
+                BorderThickness="2" 
+                Margin="0.5">
+
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                    <RowDefinition Height="1*" />
+                </Grid.RowDefinitions>
+
+                <!-- Oven Number -->
+                <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                           FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                           Grid.Row="0" 
+                           HorizontalAlignment="Center"  
+                           Text="{Binding OvenNumber, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat=Печь № {0}}" 
+                           VerticalAlignment="Center" />
+
+                <!-- Temperature -->
+                <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                           FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                           Grid.Row="1" 
+                           HorizontalAlignment="Center"  
+                           Text="{Binding OvenTemperature, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat={}{0:0.0} °C}" 
+                           VerticalAlignment="Center" />
+                <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+                    <!-- Run Time -->
+                    <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                               FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                               HorizontalAlignment="Center"  
+                               Text="{Binding RunTime, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat='{}{0:hh\\:mm\\:ss}'}" 
+                               VerticalAlignment="Center" />
+
+                    <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                               FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                               HorizontalAlignment="Center"  
+                               Text="{Binding StepOfProgram, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat='- {0:#} -'}" 
+                               VerticalAlignment="Center" />
+
+                    <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
+                               FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
+                               HorizontalAlignment="Center"  
+                               Text="{Binding OvenStatus, RelativeSource={RelativeSource AncestorType=local:OvenCard},StringFormat=' {0}'}" 
+                               VerticalAlignment="Center" />
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- Flash overlay that will be animated -->
         <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-                <RowDefinition Height="1*" />
-            </Grid.RowDefinitions>
+            <!-- Rectangle that will be flashing -->
+            <Rectangle x:Name="flashOverlay" Fill="Red" Opacity="0" RadiusX="20" RadiusY="20"/>
 
-            <!-- Oven Number -->
-            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
-                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
-                       Grid.Row="0" 
-                       HorizontalAlignment="Center"  
-                       Text="{Binding OvenNumber, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat=Печь № {0}}" 
-                       VerticalAlignment="Center" />
-
-            <!-- Temperature -->
-            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
-                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
-                       Grid.Row="1" 
-                       HorizontalAlignment="Center"  
-                       Text="{Binding OvenTemperature, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat={}{0:0.0} °C}" 
-                       VerticalAlignment="Center" />
-            <StackPanel Orientation="Horizontal" Grid.Row="2" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <!-- Run Time -->
-            <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
-                       FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
-                   
-                       HorizontalAlignment="Center"  
-                       Text="{Binding RunTime, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat='{}{0:hh\\:mm\\:ss}'}" 
-                       VerticalAlignment="Center" />
-
-                <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
-                           FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
-                           
-                           HorizontalAlignment="Center"  
-                           Text="{Binding StepOfProgram, RelativeSource={RelativeSource AncestorType=local:OvenCard}, StringFormat='- {0:#} -'}" 
-                           VerticalAlignment="Center" />
-
-                <TextBlock Foreground="{Binding FontColor, RelativeSource={RelativeSource AncestorType=local:OvenCard}}"
-                           FontSize="{Binding OvenFontSize, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" 
-                           
-                           HorizontalAlignment="Center"  
-                           Text="{Binding OvenStatus, RelativeSource={RelativeSource AncestorType=local:OvenCard},StringFormat=' {0}'}" 
-                           VerticalAlignment="Center" />
-            </StackPanel>
+            <!-- Number displayed in the center of the rectangle -->
+            <TextBlock x:Name="flashingNumber" Foreground="White" FontSize="200" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                       Text="{Binding OvenNumber, RelativeSource={RelativeSource AncestorType=local:OvenCard}}" />
         </Grid>
-    </Border>
+    </Grid>
 </UserControl>

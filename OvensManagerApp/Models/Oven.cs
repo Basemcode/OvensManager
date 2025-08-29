@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OvensManagerApp.Enums;
+using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
@@ -16,7 +17,7 @@ public class Oven : INotifyPropertyChanged
     private int _targetTemp;
     private int _openingTemp;
     private string _ovenStatus = "Idle";
-    
+    public CycleSteps CycleStep { get; set; } = CycleSteps.Idle;
 
     public int Number
     {

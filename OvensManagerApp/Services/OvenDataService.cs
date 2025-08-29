@@ -72,7 +72,7 @@ public class OvenDataService
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
-            return TestingHelper.GetTestingTemperature();
+            return VirtualDataGenerator.GetTestingTemperature(ovenAddress);
         }
         if (!_initialized)
         {
@@ -109,7 +109,7 @@ public class OvenDataService
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
-            return TestingHelper.GetTestingOperatingMode();
+            return VirtualDataGenerator.GetTestingOperatingMode(ovenAddress);
         }
         if (!_initialized)
         {
@@ -146,7 +146,7 @@ public class OvenDataService
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
-            return TestingHelper.GetTestingStepOfProgram();
+            return VirtualDataGenerator.GetTestingStepOfProgram(ovenAddress);
         }
         if (!_initialized)
         {

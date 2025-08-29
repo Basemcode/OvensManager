@@ -30,5 +30,12 @@
         <GradientStop Color="#FFDEE8F5" Offset="0"/>
         <GradientStop Color="#FFB7C9E2" Offset="1"/>
     </LinearGradientBrush>
-    
+
+    <!-- blue -->
+    <LinearGradientBrush x:Key="BlueGradient" StartPoint="0,0" EndPoint="0,1">
+        <GradientStop Color="LightSkyBlue" Offset="0"/>
+        <GradientStop Color="DodgerBlue" Offset="1"/>
+    </LinearGradientBrush>
+
+
 </ResourceDictionary>
