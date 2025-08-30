@@ -24,8 +24,10 @@ public class OvenDataService
     {
         get
         {
+            Console.WriteLine("OvenDataService Instance requested on thread: " + Thread.CurrentThread.ManagedThreadId);
             lock (lockObject) // Acquire lock
             {
+                Console.WriteLine("Lock acquired by thread: " + Thread.CurrentThread.ManagedThreadId);
                 if (_instance == null)
                 {
                     _instance = new OvenDataService();
@@ -68,7 +70,7 @@ public class OvenDataService
         }
     }
 
-    public async Task<float> GetOvenTemperatureAsync(int ovenAddress)
+    public float GetOvenTemperatureAsync(int ovenAddress)
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
@@ -83,16 +85,12 @@ public class OvenDataService
         try
         {
             // Run the oven data fetch operation in a background thread
-            var dataFromDevice = await Task.Run(() =>
-            {
-                var receivedData = _owenProtocolMaster.OwenRead(
+            var dataFromDevice = _owenProtocolMaster.OwenRead(
                     ovenAddress,
                     AddressLengthType.Bits8,
                     "read"
                 );
-                Console.WriteLine($"oven num: {ovenAddress/8} on thread: {Thread.CurrentThread.ManagedThreadId} Data: {receivedData}");
-                return receivedData;
-            });
+            Console.WriteLine($"oven num: {ovenAddress / 8} on thread: {Thread.CurrentThread.ManagedThreadId} Data: {dataFromDevice}");
 
             // Convert the data from the device to a float value
             var converterFloat = new ConverterFloatTimestamp();
@@ -109,11 +107,11 @@ public class OvenDataService
         }
     }
 
-    public async Task<int> GetOvenOperatingModeAsync(int ovenAddress)
+    public int GetOvenOperatingModeAsync(int ovenAddress)
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
-            var temp = await VirtualDataGenerator.GetTestingOperatingModeAsync(ovenAddress);
+            var temp =VirtualDataGenerator.GetTestingOperatingModeAsync(ovenAddress);
             return temp;
         }
 
@@ -125,12 +123,9 @@ public class OvenDataService
         try
         {
             // Run the oven data fetch operation in a background thread
-            var dataFromDevice = await Task.Run(() =>
-                {   var receivedData = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.St");
+            var dataFromDevice = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.St");
                     //Console.WriteLine("OperatingMode received on thread : " + Thread.CurrentThread.ManagedThreadId +
                      //   " Data: " + receivedData);
-                    return receivedData; }
-            );
 
             // Convert the data from the device to an int value
             var converterU = new ConverterU(2);
@@ -147,7 +142,7 @@ public class OvenDataService
         }
     }
 
-    public async Task<int> GetOvenStepOfProgramAsync(int ovenAddress)
+    public int GetOvenStepOfProgramAsync(int ovenAddress)
     {
         if (Helpers.TestingHelper.IsDevelop)
         {
@@ -162,13 +157,10 @@ public class OvenDataService
         try
         {
             // Run the oven data fetch operation in a background thread
-            var dataFromDevice = await Task.Run(() =>
-                { var receivedData = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.StP");
+            var dataFromDevice = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.StP");
                     //Console.WriteLine("StepOfProgram received on thread : " + Thread.CurrentThread.ManagedThreadId +
                     //   " Data: " + receivedData);
-                    return receivedData;
-                }
-            );
+                    
 
             // Convert the data from the device to an int value
             var converterU = new ConverterU(2);

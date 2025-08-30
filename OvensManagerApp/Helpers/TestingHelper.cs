@@ -11,8 +11,8 @@ namespace OvensManagerApp.Helpers;
 
 public class TestingHelper
 {
-    public static bool IsDevelop { get; set; } = false;
-    public static int TestingTimerInterval { get; set; } = 1000; // in milliseconds
+    public static bool IsDevelop { get; set; } = true;
+    public static int TestingTimerInterval { get; set; } = 100; // in milliseconds
 }
 
 public static class VirtualDataGenerator
@@ -55,13 +55,14 @@ public static class VirtualDataGenerator
     private static OperatingModes _status = OperatingModes.Stopped;
     private static bool _isRising = true;
     public static CycleSteps _cycleStep = CycleSteps.Idle;
-    static DispatcherTimer _timer;
+    static System.Timers.Timer _timer;
 
     public static void Start(int interval)
     {
-        _timer = new DispatcherTimer();
-        _timer.Tick += UpdateVirtualOvenInternalStatus;
-        _timer.Interval = TimeSpan.FromMilliseconds(interval);
+        _timer = new System.Timers.Timer();
+        _timer.Elapsed += UpdateVirtualOvenInternalStatus;
+        _timer.Interval = interval;
+        _timer.AutoReset = true;
         _timer.Start();
         _isStarted = true;
 
@@ -136,6 +137,8 @@ public static class VirtualDataGenerator
     {
         if (_isStarted)
         {
+            Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " Data: " + _ovensData[oven].Temperature);
+            Thread.Sleep(50); // Simulate some delay
             return _ovensData[oven].Temperature;
         }
         else
@@ -146,25 +149,27 @@ public static class VirtualDataGenerator
     }
 
 
-    public static async Task<int> GetTestingOperatingModeAsync(int oven)
+    public static int GetTestingOperatingModeAsync(int oven)
     {
         if (_isStarted)
         {
-            var dataFromDevice = await Task.Run(() =>
+            var dataFromDevice = (int)_ovensData[oven]._status;
+            
+            /*var dataFromDevice = await Task.Run(() =>
             {
                 var reveivedData = (int)_ovensData[oven]._status;
                 Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " Data: " + reveivedData);
                 Thread.Sleep(50); // Simulate some delay
                 return reveivedData;
-            });
-            
+            });*/
+
             return dataFromDevice;
         }
         else
         {
             // Start asynchronously and return after the delay
             Start(TestingHelper.TestingTimerInterval);
-            await Task.Delay(100); // Asynchronously wait for 100ms
+            
             return (int)_ovensData[oven]._status;
         }
     }

@@ -137,8 +137,9 @@ public partial class OvenCard : UserControl
                 var storyboard = control.Resources["FlashBackgroundStoryboard"] as Storyboard;
                 control.flashOverlay.Opacity = 0;  // Ensure overlay is invisible when not flashing
                 control.flashOverlay.Fill = Brushes.Red;  // Set the overlay color
-                control.flashingNumber.Opacity = 0.9;  // Set the overlayNumber opacity to be visible
-                control.flashingNumber.Foreground = Brushes.White;  // Set the overlayNumber color
+                
+                control.flashingNumber.Visibility = Visibility.Visible; // Hide the overlayNumber
+                //control.flashingNumber.Foreground = Brushes.White;  // Set the overlayNumber color
                 storyboard?.Begin();
 
                 // Start the timer to stop the animation after 10 seconds
@@ -151,8 +152,9 @@ public partial class OvenCard : UserControl
                 storyboard?.Pause();
                 control.flashOverlay.Opacity = 0;  // Ensure overlay is invisible when not flashing
                 control.flashOverlay.Fill = Brushes.Transparent;  // Reset overlay color
-                control.flashingNumber.Opacity = 0;  // Set the overlayNumber opacity to be invisible
-                control.flashingNumber.Foreground = Brushes.Transparent;  // Reset overlayNumber color
+                
+                control.flashingNumber.Visibility = Visibility.Hidden; // Hide the overlayNumber
+                
                 control._flashTimer.Stop();  // Stop the timer if background is not green
             }
         }

@@ -14,11 +14,13 @@
             <DoubleAnimation
                 Storyboard.TargetName="flashOverlay"
                 Storyboard.TargetProperty="Opacity"
-                From="0" To="1" Duration="0:0:0.5"/>
+                From="0" To="1" Duration="0:0:0.5"
+                FillBehavior="Stop"/>
             <DoubleAnimation
                 Storyboard.TargetName="flashingNumber"
                 Storyboard.TargetProperty="Opacity"
-                From="0" To="1" Duration="0:0:0.5"/>
+                From="0" To="1" Duration="0:0:0.5"
+                FillBehavior="Stop"/>
         </Storyboard>
     </UserControl.Resources>
 

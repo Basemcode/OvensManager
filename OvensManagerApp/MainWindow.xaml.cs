@@ -60,7 +60,7 @@ public partial class MainWindow : Window, INotifyPropertyChanged
     {
         if (_dashboardVm != null)
         {
-            _dashboardVm.StartDataUpdatingTimer();
+            _dashboardVm.Start();
         }
     }
 
