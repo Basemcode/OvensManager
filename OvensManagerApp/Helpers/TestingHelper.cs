@@ -137,7 +137,6 @@ public static class VirtualDataGenerator
     {
         if (_isStarted)
         {
-            Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " Data: " + _ovensData[oven].Temperature);
             Thread.Sleep(50); // Simulate some delay
             return _ovensData[oven].Temperature;
         }
@@ -154,14 +153,6 @@ public static class VirtualDataGenerator
         if (_isStarted)
         {
             var dataFromDevice = (int)_ovensData[oven]._status;
-            
-            /*var dataFromDevice = await Task.Run(() =>
-            {
-                var reveivedData = (int)_ovensData[oven]._status;
-                Console.WriteLine(Thread.CurrentThread.ManagedThreadId + " Data: " + reveivedData);
-                Thread.Sleep(50); // Simulate some delay
-                return reveivedData;
-            });*/
 
             return dataFromDevice;
         }

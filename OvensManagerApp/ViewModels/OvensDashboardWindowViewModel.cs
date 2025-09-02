@@ -18,10 +18,10 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
 {
     private bool _started;
     public double _dashboardFontSize = 50;
-    private int infoRequestDelayTime = 5000;
+    private int infoRequestDelayTime = 3000;
     private DispatcherTimer _runTimeTimer; // Timer for updating oven runtime
     private System.Timers.Timer _dataUpdatingTimer; // Timer for updating oven runtime
-    
+
     private ObservableCollection<Oven> _ovens;
 
     public ObservableCollection<Oven> Ovens
@@ -39,6 +39,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     public RelayCommand<IClosable> WindowClosedCommand { get; set; }
 
     private WindowState _dashboardWindowState;
+    private bool _isGettingData = false;
 
     public WindowState DashboardWindowState
     {
@@ -49,8 +50,6 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
             OnPropertyChanged();
         }
     }
-
-    
 
     public double DashboardFontSize
     {
@@ -104,7 +103,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     public void StartDataUpdatingTimer()
     {
         // This timer will run on its own thread to update values of ovens with
-        // the new values that will get from the ovens controllers 
+        // the new values that will get from the ovens controllers
         // Setup timer
         _dataUpdatingTimer = new();
         _dataUpdatingTimer.Interval = infoRequestDelayTime; // update every second
@@ -115,9 +114,11 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
             {
                 _dataUpdatingTimer.Stop();
             }
-            UpdateOvensData();
+            if (_isGettingData == false) // if the process of getting data is not running, start it
+            {
+                UpdateOvensData();
+            }
         };
-        
 
         _dataUpdatingTimer.Start();
     }
@@ -125,14 +126,13 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     // Update ovens data from the controllers , should be run in a separate thread by the timer (on timer's thread)
     public async void UpdateOvensData()
     {
+        _isGettingData = true;
         foreach (var oven in Ovens)
         {
             try
             {
                 // Read temperature from the oven
-                var temperature = OvenDataService.Instance.GetOvenTemperatureAsync(
-                    oven.Address
-                );
+                var temperature = OvenDataService.Instance.GetOvenTemperatureAsync(oven.Address);
                 oven.Temperature = temperature;
                 Console.WriteLine(
                     DateTime.Now.ToShortTimeString() + " " + oven.Number + " : " + oven.Temperature
@@ -143,24 +143,12 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                     oven.Address
                 );
                 oven.OvenStatus = Enum.GetName(typeof(OperatingModes), operationMode);
-                /*Console.WriteLine(
-                    DateTime.Now.ToShortTimeString() + " " + oven.Number + " : " + oven.OvenStatus
-                );*/
 
                 // Read step of program from the oven
                 var stepOfProgram = OvenDataService.Instance.GetOvenStepOfProgramAsync(
                     oven.Address
                 );
                 oven.StepOfProgram = stepOfProgram;
-                /*Console.WriteLine(
-                    DateTime.Now.ToShortTimeString()
-                        + " "
-                        + oven.Number
-                        + " : "
-                        + oven.StepOfProgram
-                );*/
-
-                // Update oven status based on temperature and operating mode
                 
             }
             catch (Exception e)
@@ -174,6 +162,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
 
             //await Task.Delay(50);
         }
+        _isGettingData = false;
     }
 
     public void StartUpdatingInterface()
@@ -184,9 +173,12 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
             {
                 try
                 {
-                    if (   oven.OvenStatus == "Working" 
-                        && oven.Temperature <= oven.TargetTemp 
-                        && oven.StepOfProgram == 1)
+                    // Update oven status based on temperature and operating mode
+                    if (
+                        oven.OvenStatus == "Working"
+                        && oven.Temperature <= oven.TargetTemp
+                        && oven.StepOfProgram == 1
+                    )
                     {
                         if (
                             oven.BackgroundColor != ResourcesHelper.redBrush
@@ -202,7 +194,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
 
                     if ((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted"))
                     {
-                        if (oven.Temperature <= 70)// ready to unload temperature
+                        if (oven.Temperature <= 70) // ready to unload temperature
                         {
                             if (
                                 oven.BackgroundColor != ResourcesHelper.blueBrush
@@ -234,7 +226,10 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                     if (
                         (oven.OvenStatus == "Working" && oven.StepOfProgram == 2)
                         || (
-                            (oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted")
+                            (
+                                oven.OvenStatus == "Stopped"
+                                || oven.OvenStatus == "ProgramIsCompleted"
+                            )
                             && (oven.StepOfProgram == 1 || oven.StepOfProgram == 5)
                             && oven.Temperature > oven.OpeningTemp
                             && oven.Temperature < oven.TargetTemp
@@ -255,12 +250,10 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                 }
                 catch (Exception e)
                 {
-
                     throw;
                 }
             }
         }
-        
     }
 
     #region LoadOvens
@@ -287,6 +280,4 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     {
         throw new NotImplementedException();
     }
-
-    
 }

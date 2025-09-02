@@ -58,7 +58,7 @@ public class OvenDataService
         {
             // Create and configure the serial port
             _serialPort = new SerialPort(config?.PortName, baudRate, parity, dataBits, stopBits);
-            _serialPort.ReadTimeout = 500; // in millisecond
+            _serialPort.ReadTimeout = 1000; // in millisecond
             _serialPort.Open();
 
             // Create the OwenProtocolMaster object using SerialPort
@@ -90,7 +90,9 @@ public class OvenDataService
                     AddressLengthType.Bits8,
                     "read"
                 );
-            Console.WriteLine($"oven num: {ovenAddress / 8} on thread: {Thread.CurrentThread.ManagedThreadId} Data: {dataFromDevice}");
+
+            // for debugging
+            // Console.WriteLine($"oven num: {ovenAddress / 8} on thread: {Thread.CurrentThread.ManagedThreadId} Data: {dataFromDevice}");
 
             // Convert the data from the device to a float value
             var converterFloat = new ConverterFloatTimestamp();
@@ -124,8 +126,6 @@ public class OvenDataService
         {
             // Run the oven data fetch operation in a background thread
             var dataFromDevice = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.St");
-                    //Console.WriteLine("OperatingMode received on thread : " + Thread.CurrentThread.ManagedThreadId +
-                     //   " Data: " + receivedData);
 
             // Convert the data from the device to an int value
             var converterU = new ConverterU(2);
@@ -158,10 +158,7 @@ public class OvenDataService
         {
             // Run the oven data fetch operation in a background thread
             var dataFromDevice = _owenProtocolMaster.OwenRead(ovenAddress, AddressLengthType.Bits8, "r.StP");
-                    //Console.WriteLine("StepOfProgram received on thread : " + Thread.CurrentThread.ManagedThreadId +
-                    //   " Data: " + receivedData);
                     
-
             // Convert the data from the device to an int value
             var converterU = new ConverterU(2);
             var valueFromDevice = converterU.ConvertBack(dataFromDevice);
