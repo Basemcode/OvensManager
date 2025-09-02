@@ -184,7 +184,9 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
             {
                 try
                 {
-                    if (oven.OvenStatus == "Working" && oven.Temperature <= 900 && oven.StepOfProgram == 1)
+                    if (   oven.OvenStatus == "Working" 
+                        && oven.Temperature <= oven.TargetTemp 
+                        && oven.StepOfProgram == 1)
                     {
                         if (
                             oven.BackgroundColor != ResourcesHelper.redBrush
@@ -200,7 +202,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
 
                     if ((oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted"))
                     {
-                        if (oven.Temperature <= 70)
+                        if (oven.Temperature <= 70)// ready to unload temperature
                         {
                             if (
                                 oven.BackgroundColor != ResourcesHelper.blueBrush
@@ -213,7 +215,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                                 oven.ResetTimer();
                             }
                         }
-                        else if (oven.Temperature < 430)
+                        else if (oven.Temperature < oven.OpeningTemp)
                         {
                             if (
                                 oven.BackgroundColor != ResourcesHelper.greenBrush
@@ -234,8 +236,8 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                         || (
                             (oven.OvenStatus == "Stopped" || oven.OvenStatus == "ProgramIsCompleted")
                             && (oven.StepOfProgram == 1 || oven.StepOfProgram == 5)
-                            && oven.Temperature > 430
-                            && oven.Temperature < 760
+                            && oven.Temperature > oven.OpeningTemp
+                            && oven.Temperature < oven.TargetTemp
                         )
                     )
                     {

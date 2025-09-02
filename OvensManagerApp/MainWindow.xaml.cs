@@ -96,10 +96,6 @@ public partial class MainWindow : Window, INotifyPropertyChanged
 
     private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
     {
-       /* if (_dashboard != null)
-        {
-            _dashboard.Close();
-            _dashboard = null;
-        }*/
+        Application.Current.Shutdown();
     }
 }
