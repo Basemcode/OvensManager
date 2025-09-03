@@ -20,10 +20,15 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     public double _dashboardFontSize = 50;
     private int infoRequestDelayTime = 3000;
     private DispatcherTimer _runTimeTimer; // Timer for updating oven runtime
-    private System.Timers.Timer _dataUpdatingTimer; // Timer for updating oven runtime
-
+    /// <summary>
+    /// Timer for updating ovens runtime 
+    /// </summary>
+    private System.Timers.Timer _dataUpdatingTimer; 
+    
     private ObservableCollection<Oven> _ovens;
-
+    /// <summary>
+    /// ovens list that will hold all ovens data and will be used to update interface using binding
+    /// </summary>
     public ObservableCollection<Oven> Ovens
     {
         get { return _ovens; }
@@ -134,9 +139,6 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                 // Read temperature from the oven
                 var temperature = OvenDataService.Instance.GetOvenTemperatureAsync(oven.Address);
                 oven.Temperature = temperature;
-                Console.WriteLine(
-                    DateTime.Now.ToShortTimeString() + " " + oven.Number + " : " + oven.Temperature
-                );
 
                 // Read operating mode from the oven
                 var operationMode = OvenDataService.Instance.GetOvenOperatingModeAsync(
@@ -160,7 +162,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                 // throw new Exception(e.Message);
             }
 
-            //await Task.Delay(50);
+            //await Task.Delay(10);
         }
         _isGettingData = false;
     }

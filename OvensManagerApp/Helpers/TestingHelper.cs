@@ -11,7 +11,7 @@ namespace OvensManagerApp.Helpers;
 
 public class TestingHelper
 {
-    public static bool IsDevelop { get; set; } = false;
+    public static bool IsDevelop { get; set; } = true;
     public static int TestingTimerInterval { get; set; } = 100; // in milliseconds
 }
 
@@ -20,42 +20,39 @@ public static class VirtualDataGenerator
     // csharpier-ignore
     private static Dictionary<int, VirtualOvenStatus> _ovensData = new()
     {
-        // Oven address and temperature
-        { 8*1, new VirtualOvenStatus(){Temperature= 10.0f , _isRising = true  } },
-        { 8*2, new VirtualOvenStatus(){Temperature= 50.2f , _isRising = false  } },
-        { 8*3, new VirtualOvenStatus(){Temperature= 120.5f, _isRising = true  } },
-        { 8*4, new VirtualOvenStatus(){Temperature= 170.8f, _isRising = false  } },
-        { 8*5, new VirtualOvenStatus(){Temperature= 210.3f, _isRising = true  } },
-        { 8*6, new VirtualOvenStatus(){Temperature= 240.1f, _isRising = false  } },
-        { 8*7, new VirtualOvenStatus(){Temperature= 270.7f, _isRising = true   } },
-        { 8*8, new VirtualOvenStatus(){Temperature= 310.6f, _isRising = false } },
-        { 8*9, new VirtualOvenStatus(){Temperature= 350.9f, _isRising = true  } },
-        { 8*10,new VirtualOvenStatus(){Temperature= 390.0f, _isRising = false } },
-        { 8*11,new VirtualOvenStatus(){Temperature= 430.8f, _isRising = true  } },
-        { 8*12,new VirtualOvenStatus(){Temperature= 470.2f, _isRising = false  } },
-        { 8*13,new VirtualOvenStatus(){Temperature= 510.6f, _isRising = true   } },
-        { 8*14,new VirtualOvenStatus(){Temperature= 550.4f, _isRising = false  } },
-        { 8*15,new VirtualOvenStatus(){Temperature= 600.1f, _isRising = true   } },
-        { 8*16,new VirtualOvenStatus(){Temperature= 650.7f, _isRising = false } },
+        // Oven address and temperature and changing diriction
+        { 8*1, new VirtualOvenStatus(){Temperature= 10.0f , IsRising = true  } },
+        { 8*2, new VirtualOvenStatus(){Temperature= 50.2f , IsRising = false  } },
+        { 8*3, new VirtualOvenStatus(){Temperature= 120.5f, IsRising = true  } },
+        { 8*4, new VirtualOvenStatus(){Temperature= 170.8f, IsRising = false  } },
+        { 8*5, new VirtualOvenStatus(){Temperature= 210.3f, IsRising = true  } },
+        { 8*6, new VirtualOvenStatus(){Temperature= 240.1f, IsRising = false  } },
+        { 8*7, new VirtualOvenStatus(){Temperature= 270.7f, IsRising = true   } },
+        { 8*8, new VirtualOvenStatus(){Temperature= 310.6f, IsRising = false } },
+        { 8*9, new VirtualOvenStatus(){Temperature= 350.9f, IsRising = true  } },
+        { 8*10,new VirtualOvenStatus(){Temperature= 390.0f, IsRising = false } },
+        { 8*11,new VirtualOvenStatus(){Temperature= 430.8f, IsRising = true  } },
+        { 8*12,new VirtualOvenStatus(){Temperature= 470.2f, IsRising = false  } },
+        { 8*13,new VirtualOvenStatus(){Temperature= 510.6f, IsRising = true   } },
+        { 8*14,new VirtualOvenStatus(){Temperature= 550.4f, IsRising = false  } },
+        { 8*15,new VirtualOvenStatus(){Temperature= 600.1f, IsRising = true   } },
+        { 8*16,new VirtualOvenStatus(){Temperature= 650.7f, IsRising = false } },
     };
+
+    private static bool _isStarted = false;
+    static System.Timers.Timer? _timer;
 
     struct VirtualOvenStatus
     {
         public float Temperature;
-        public OperatingModes _status = OperatingModes.Stopped;
-        public int _step = 1;
-        public CycleSteps _cycleStep = CycleSteps.Idle;
-        internal bool _isRising;
+        public OperatingModes Status = OperatingModes.Stopped;
+        public int Step = 1;
+        public CycleSteps CycleStep = CycleSteps.Idle;
+        internal bool IsRising;
 
         public VirtualOvenStatus() { }
     }
 
-    private static int _step = 1;
-    private static bool _isStarted = false;
-    private static OperatingModes _status = OperatingModes.Stopped;
-    private static bool _isRising = true;
-    public static CycleSteps _cycleStep = CycleSteps.Idle;
-    static System.Timers.Timer _timer;
 
     public static void Start(int interval)
     {
@@ -69,7 +66,7 @@ public static class VirtualDataGenerator
         foreach (var oven in _ovensData.Keys)
         {
             var ovenData = _ovensData[oven];
-            ovenData._isRising = true;
+            ovenData.IsRising = true;
         }
         UpdateVirtualOvenInternalStatus(null, null);
     }
@@ -81,19 +78,19 @@ public static class VirtualDataGenerator
             foreach (var oven in _ovensData.Keys)
             {
                 var ovenData = _ovensData[oven];
-                if (ovenData._isRising)
+                if (ovenData.IsRising)
                 {
-                    if (ovenData._cycleStep != CycleSteps.Heating)
+                    if (ovenData.CycleStep != CycleSteps.Heating)
                     {
-                        ovenData._cycleStep = CycleSteps.Heating;
+                        ovenData.CycleStep = CycleSteps.Heating;
                     }
                     ovenData.Temperature++;
-                    ovenData._status = OperatingModes.Working;
+                    ovenData.Status = OperatingModes.Working;
 
                     if (ovenData.Temperature > 750)
                     {
-                        ovenData._isRising = false;
-                        ovenData._status = OperatingModes.ProgramIsCompleted;
+                        ovenData.IsRising = false;
+                        ovenData.Status = OperatingModes.ProgramIsCompleted;
                     }
                 }
                 else
@@ -102,30 +99,30 @@ public static class VirtualDataGenerator
 
                     if (ovenData.Temperature > 430)
                     {
-                        if (ovenData._cycleStep != CycleSteps.CoolingDown)
+                        if (ovenData.CycleStep != CycleSteps.CoolingDown)
                         {
-                            ovenData._cycleStep = CycleSteps.CoolingDown;
+                            ovenData.CycleStep = CycleSteps.CoolingDown;
                         }
                     }
                     if (ovenData.Temperature < 430)
                     {
-                        if (ovenData._cycleStep != CycleSteps.CanOpen)
+                        if (ovenData.CycleStep != CycleSteps.CanOpen)
                         {
-                            ovenData._cycleStep = CycleSteps.CanOpen;
+                            ovenData.CycleStep = CycleSteps.CanOpen;
                         }
                     }
                     if (ovenData.Temperature < 70)
                     {
-                        if (ovenData._cycleStep != CycleSteps.ReadytoUnload)
+                        if (ovenData.CycleStep != CycleSteps.ReadytoUnload)
                         {
-                            ovenData._cycleStep = CycleSteps.ReadytoUnload;
+                            ovenData.CycleStep = CycleSteps.ReadytoUnload;
                         }
                     }
                     if (ovenData.Temperature < 1)
                     {
-                        ovenData._isRising = true;
-                        ovenData._status = OperatingModes.Stopped;
-                        ovenData._step = 1;
+                        ovenData.IsRising = true;
+                        ovenData.Status = OperatingModes.Stopped;
+                        ovenData.Step = 1;
                     }
                 }
                 _ovensData[oven] = ovenData;
@@ -133,6 +130,7 @@ public static class VirtualDataGenerator
         }
     }
 
+    // 
     public static float GetTestingTemperature(int oven)
     {
         if (_isStarted)
@@ -152,7 +150,7 @@ public static class VirtualDataGenerator
     {
         if (_isStarted)
         {
-            var dataFromDevice = (int)_ovensData[oven]._status;
+            var dataFromDevice = (int)_ovensData[oven].Status;
 
             return dataFromDevice;
         }
@@ -161,7 +159,7 @@ public static class VirtualDataGenerator
             // Start asynchronously and return after the delay
             Start(TestingHelper.TestingTimerInterval);
             
-            return (int)_ovensData[oven]._status;
+            return (int)_ovensData[oven].Status;
         }
     }
 
@@ -170,12 +168,12 @@ public static class VirtualDataGenerator
     {
         if (_isStarted)
         {
-            return _ovensData[oven]._step;
+            return _ovensData[oven].Step;
         }
         else
         {
             Start(TestingHelper.TestingTimerInterval);
-            return _ovensData[oven]._step;
+            return _ovensData[oven].Step;
         }
     }
 }

@@ -9,11 +9,12 @@ using OwenioNet.Types;
 
 namespace OvensManagerApp.Services;
 
+// Singleton class for communication with ovens
 public class OvenDataService
 {
-    private static OvenDataService _instance;
-    private static SerialPort _serialPort;
-    private static IOwenProtocolMaster _owenProtocolMaster;
+    private static OvenDataService? _instance;
+    private static SerialPort? _serialPort;
+    private static IOwenProtocolMaster? _owenProtocolMaster;
     private static bool _initialized = false;
     private static readonly object lockObject = new object(); // for thread safe locking
 
@@ -38,7 +39,7 @@ public class OvenDataService
         }
     }
 
-    // Initialize the serial port and Modbus master
+    // Initialize the serial port for Owen protocol communication
     private static void Initialize(
         int baudRate = 9600,
         Parity parity = Parity.None,

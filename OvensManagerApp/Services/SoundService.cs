@@ -65,7 +65,7 @@ public class SoundService
             if (File.Exists(soundFilePath))
             {
                 _soundPlayer.SoundLocation = soundFilePath;
-                Task.Run(()=>_soundPlayer.Play());
+                Task.Run(()=>_soundPlayer.PlaySync());
             }
             else
             {
