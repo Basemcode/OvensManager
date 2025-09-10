@@ -255,6 +255,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                 }
                 catch (Exception e)
                 {
+                    // todo: log the error
                     throw;
                 }
             }

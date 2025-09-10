@@ -3,62 +3,121 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:OvensManagerApp"
-        xmlns:controls="clr-namespace:OvensManagerApp.MyControls"
+        xmlns:vm="clr-namespace:OvensManagerApp.ViewModels"
         mc:Ignorable="d"
-        Title="MainWindow"           
-        WindowStartupLocation="Manual" 
-        Background="White" 
-        Height="325" 
-        Width="530" Closing="Window_Closing" >
-    <Border CornerRadius="50" Margin="4">
-        <Grid >
-            <StackPanel Orientation="Vertical" >
+        Title="Ovens Manager"
+        Height="500"
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        Background="#F5F6FA">
 
-                <Button  Content="Открыть экран состояния" Width="150" Height="50" Margin="10" Click="OpenDashboard_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-                
-                
-                
-                <Button Content="Запустить" Width="150" Height="50" Margin="10" Click="StartOnDashboard_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+    <Window.Resources>
+        <!-- Modern Button Style -->
+        <Style TargetType="Button">
+            <Setter Property="Height" Value="45"/>
+            <Setter Property="Margin" Value="8"/>
+            <Setter Property="Padding" Value="15,5"/>
+            <Setter Property="FontSize" Value="14"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#4A90E2"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border CornerRadius="8" 
+                                Background="{TemplateBinding Background}">
+                            <ContentPresenter HorizontalAlignment="Center"
+                                              VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Triggers>
+                <!-- Hover effect -->
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#357ABD"/>
+                </Trigger>
+                <!-- Pressed effect -->
+                <Trigger Property="IsPressed" Value="True">
+                    <Setter Property="Background" Value="#2C5E99"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
 
-                <Button x:Name="btnMaximize" Content="Maximize" Width="150" Height="50" Margin="10" Click="btnMaximize_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                    <TextBlock Text="Размер шрифта" VerticalAlignment="Center" ></TextBlock>
-                    <Button Content="+" Width="20" Height="20" Margin="10" Click="btnIncreaseFontSize_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
-                    <TextBlock Text="{Binding DashboardFontSize,RelativeSource={RelativeSource AncestorType=Window}}" VerticalAlignment="Center"></TextBlock>  
-                    <Button Content="-" Width="20" Height="20" Margin="10" Click="btnDecreaseFontSize_Click">
-                    <Button.Resources>
-                        <Style TargetType="Border">
-                            <Setter Property="CornerRadius" Value="5"/>
-                        </Style>
-                    </Button.Resources>
-                </Button>
+        <!-- Card-like container -->
+        <Style x:Key="CardStyle" TargetType="Border">
+            <Setter Property="CornerRadius" Value="20"/>
+            <Setter Property="Padding" Value="20"/>
+            <Setter Property="Background" Value="White"/>
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect BlurRadius="20"
+                                      ShadowDepth="3"
+                                      Opacity="0.2"/>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <!-- 🔹 DataContext -->
+    <Window.DataContext>
+        <vm:MainWindowViewModel />
+    </Window.DataContext>
+
+    <!-- 🔹 Layout -->
+    <Grid>
+        <Border Style="{StaticResource CardStyle}" 
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Width="400">
+            <StackPanel Orientation="Vertical" HorizontalAlignment="Center">
+
+                <!-- Title -->
+                <TextBlock Text="Ovens Manager"
+                           FontSize="22"
+                           FontWeight="Bold"
+                           Foreground="#333"
+                           HorizontalAlignment="Center"
+                           Margin="0,0,0,20"/>
+
+                <!-- Buttons -->
+                <Button Content="Открыть экран состояния"
+                        Command="{Binding OpenDashboardCommand}" />
+
+                <Button Content="Запустить"
+                        Command="{Binding StartOnDashboardCommand}" />
+
+                <Button Content="Maximize"
+                        Command="{Binding MaximizeDashboardCommand}" />
+
+                <!-- Font Size Controls -->
+                <StackPanel Orientation="Horizontal"
+                            HorizontalAlignment="Center"
+                            Margin="0,15,0,5">
+                    <TextBlock Text="Размер шрифта:"
+                               VerticalAlignment="Center"
+                               FontSize="14"
+                               Foreground="#555"
+                               Margin="5"/>
+                    <Button Content="+" Width="40" Height="35"
+                            Command="{Binding IncreaseFontSizeCommand}" />
+                    <TextBlock Text="{Binding DashboardFontSize}"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               FontWeight="Bold"
+                               Foreground="#333"
+                               Margin="10,0"/>
+                    <Button Content="-" Width="40" Height="35"
+                            Command="{Binding DecreaseFontSizeCommand}" />
+                </StackPanel>
+
+                <!-- Exit -->
+                <Button Content="Выход"
+                        Background="#E94E4E"
+                        Command="{Binding ExitAppCommand}" />
+
             </StackPanel>
-            </StackPanel>
-        </Grid>
-    </Border>
+        </Border>
+    </Grid>
 </Window>
