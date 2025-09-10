@@ -1,21 +1,26 @@
-﻿using Microsoft.Extensions.Configuration;
-using OvensManagerApp.Enums;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Media;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using Microsoft.Extensions.Configuration;
+using OvensManagerApp.Enums;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace OvensManagerApp.Services;
+
 public class SoundService
 {
     private static SoundService _instance;
+    private bool _isPlayingSound;
     private static readonly object _lock = new object();
     private readonly Dictionary<SoundsList, string> _soundPaths;
     private readonly SoundPlayer _soundPlayer;
+    private readonly Queue<string> _soundsQueue = new Queue<string>();
 
     // Private constructor for singleton pattern
     private SoundService()
@@ -37,7 +42,6 @@ public class SoundService
 
         _soundPaths[SoundsList.ReadytoUnload] = soundsConfig["ReadytoUnload"];
         _soundPaths[SoundsList.OvenCanBeOpened] = soundsConfig["OvenCanBeOpened"];
-
     }
 
     // Singleton instance with thread-safe initialization
@@ -61,11 +65,11 @@ public class SoundService
     {
         if (_soundPaths.ContainsKey(soundType))
         {
-            string soundFilePath = AppDomain.CurrentDomain.BaseDirectory+ _soundPaths[soundType];
+            string soundFilePath = AppDomain.CurrentDomain.BaseDirectory + _soundPaths[soundType];
             if (File.Exists(soundFilePath))
             {
-                _soundPlayer.SoundLocation = soundFilePath;
-                Task.Run(()=>_soundPlayer.PlaySync());
+                _soundsQueue.Enqueue(soundFilePath);
+                PlaySoundsInQueue();
             }
             else
             {
@@ -76,5 +80,36 @@ public class SoundService
         {
             throw new ArgumentException($"Sound type {soundType} not configured.");
         }
+    }
+
+    // Method to play sound by sound path
+    public void PlaySound(string path)
+    {
+        string soundFilePath = AppDomain.CurrentDomain.BaseDirectory + path;
+        if (File.Exists(soundFilePath))
+        {
+            _soundsQueue.Enqueue(soundFilePath);
+            PlaySoundsInQueue();
+        }
+        else
+        {
+            throw new FileNotFoundException($"Sound file not found: {soundFilePath}");
+        }
+    }
+
+    private async void PlaySoundsInQueue()
+    {
+        if (_isPlayingSound)
+        {
+            return;
+        }
+        _isPlayingSound = true;
+        while (_soundsQueue.Count > 0)
+        {
+            string soundLocation = _soundsQueue.Dequeue();
+            _soundPlayer.SoundLocation = soundLocation;
+            await Task.Run(() => _soundPlayer.PlaySync());
+        }
+        _isPlayingSound = false;
     }
 }

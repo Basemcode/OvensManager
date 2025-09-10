@@ -14,11 +14,6 @@
         WindowState="{Binding DashboardWindowState}"
         Background="Transparent" 
         d:DesignHeight="920" d:DesignWidth="1790"  >
-    <i:Interaction.Triggers>
-        <i:EventTrigger EventName="Closed">
-            <i:InvokeCommandAction Command="{Binding WindowClosedCommand}" />
-        </i:EventTrigger>
-    </i:Interaction.Triggers>
     <Border CornerRadius="50" Margin="5">
         <ItemsControl ItemsSource="{Binding Ovens}">
             <ItemsControl.ItemsPanel>

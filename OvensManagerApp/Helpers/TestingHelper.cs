@@ -11,10 +11,11 @@ namespace OvensManagerApp.Helpers;
 
 public class TestingHelper
 {
-    public static bool IsDevelop { get; set; } = true;
+    public static bool IsDevelop { get; set; } = true; //  true => enable testing mode
     public static int TestingTimerInterval { get; set; } = 100; // in milliseconds
 }
 
+// Simulate data from ovens for testing purposes
 public static class VirtualDataGenerator
 {
     // csharpier-ignore
@@ -42,6 +43,7 @@ public static class VirtualDataGenerator
     private static bool _isStarted = false;
     static System.Timers.Timer? _timer;
 
+    // Internal structure to hold oven status
     struct VirtualOvenStatus
     {
         public float Temperature;
@@ -53,7 +55,7 @@ public static class VirtualDataGenerator
         public VirtualOvenStatus() { }
     }
 
-
+    // Start the timer to update oven statuses
     public static void Start(int interval)
     {
         _timer = new System.Timers.Timer();
@@ -71,6 +73,7 @@ public static class VirtualDataGenerator
         UpdateVirtualOvenInternalStatus(null, null);
     }
 
+    // holds the logic of updating oven statuses
     private static void UpdateVirtualOvenInternalStatus(object? sender, EventArgs e)
     {
         if (_isStarted)

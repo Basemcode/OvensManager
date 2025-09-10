@@ -41,20 +41,10 @@ public partial class MainWindow : Window, INotifyPropertyChanged
         if (_dashboardVm is null)
         {
             _dashboardVm = new OvensDashboardWindowViewModel();
-            _dashboardVm.WindowClosedCommand = new RelayCommand<IClosable>(this.CloseWindow);
             _windowService.ShowWindow(_dashboardVm);
         }
     }
 
-    private void CloseWindow(IClosable? closable)
-    {
-        this.Close();
-    }
-
-    private void _dashboard_Closed(object? sender, EventArgs e)
-    {
-        _dashboardVm = null;
-    }
 
     private void StartOnDashboard_Click(object sender, RoutedEventArgs e)
     {

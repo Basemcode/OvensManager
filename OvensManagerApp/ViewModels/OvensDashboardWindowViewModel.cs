@@ -14,18 +14,19 @@ using OvensManagerApp.Services;
 
 namespace OvensManagerApp.ViewModels;
 
-public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChanged, IClosable
+public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChanged
 {
-    private bool _started;
-    public double _dashboardFontSize = 50;
-    private int infoRequestDelayTime = 3000;
-    private DispatcherTimer _runTimeTimer; // Timer for updating oven runtime
-    /// <summary>
-    /// Timer for updating ovens runtime 
-    /// </summary>
-    private System.Timers.Timer _dataUpdatingTimer; 
+    private bool _isStarted; // indicates if the dashboard has started updating data
+    private bool _isGettingData = false; // flag to indicate if the process of getting data from ovens is running
+    public double _dashboardFontSize = 50; // default font size
+    private int _infoRequestDelayTime = 3000; // delay between each request for data from ovens in milliseconds
+    private DispatcherTimer? _runTimeTimer; // Timer for updating oven runtime counter
+    private System.Timers.Timer? _dataUpdatingTimer; // Timer for updating ovens data
+    IConfigurationRoot _configuration; // configuration object to load settings from appsettings.json
+    private ObservableCollection<Oven> _ovens; // collection of ovens to be displayed on the dashboard interface with the ability to update the interface using binding
+    private static Dictionary<string, string>? _soundFiles; // dictionary to hold sound file paths from appsettings.json
     
-    private ObservableCollection<Oven> _ovens;
+    #region properties
     /// <summary>
     /// ovens list that will hold all ovens data and will be used to update interface using binding
     /// </summary>
@@ -39,13 +40,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
         }
     }
 
-    // For closing the window
-    public RelayCommand<IClosable> CloseWindowCommand { get; private set; }
-    public RelayCommand<IClosable> WindowClosedCommand { get; set; }
-
-    private WindowState _dashboardWindowState;
-    private bool _isGettingData = false;
-
+    private WindowState _dashboardWindowState; // state of the dashboard window (maximized, minimized, normal) for binding
     public WindowState DashboardWindowState
     {
         get { return _dashboardWindowState; }
@@ -65,15 +60,28 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
             OnPropertyChanged();
         }
     }
+    #endregion
 
     public OvensDashboardWindowViewModel()
     {
-        LoadOvens();
-        this.CloseWindowCommand = new RelayCommand<IClosable>(this.CloseWindow);
+        _configuration = LoadConfigs();
+        _soundFiles = LoadSoundsPaths();
         _ovens = new ObservableCollection<Oven>(LoadOvens());
         DashboardWindowState = WindowState.Maximized;
 
         StartRunTimeTimer();
+    }
+
+    private Dictionary<string, string>? LoadSoundsPaths()
+    {
+         return _configuration.GetSection("SoundFiles").Get<Dictionary<string, string>>();
+    }
+
+    internal void Start()
+    {
+        _isStarted = true;
+        StartDataUpdatingTimer();
+        StartUpdatingInterface();
     }
 
     private void StartRunTimeTimer()
@@ -98,12 +106,6 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
         _runTimeTimer.Start();
     }
 
-    internal void Start()
-    {
-        _started = true;
-        StartDataUpdatingTimer();
-        StartUpdatingInterface();
-    }
 
     public void StartDataUpdatingTimer()
     {
@@ -111,11 +113,11 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
         // the new values that will get from the ovens controllers
         // Setup timer
         _dataUpdatingTimer = new();
-        _dataUpdatingTimer.Interval = infoRequestDelayTime; // update every second
+        _dataUpdatingTimer.Interval = _infoRequestDelayTime; // update every second
         _dataUpdatingTimer.AutoReset = true;
         _dataUpdatingTimer.Elapsed += (s, e) =>
         {
-            if (_started == false)
+            if (_isStarted == false)
             {
                 _dataUpdatingTimer.Stop();
             }
@@ -129,7 +131,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
     }
 
     // Update ovens data from the controllers , should be run in a separate thread by the timer (on timer's thread)
-    public async void UpdateOvensData()
+    public void UpdateOvensData()
     {
         _isGettingData = true;
         foreach (var oven in Ovens)
@@ -151,7 +153,6 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                     oven.Address
                 );
                 oven.StepOfProgram = stepOfProgram;
-                
             }
             catch (Exception e)
             {
@@ -169,7 +170,7 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
 
     public void StartUpdatingInterface()
     {
-        if (_started)
+        if (_isStarted)
         {
             foreach (var oven in Ovens)
             {
@@ -220,6 +221,8 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
                                 oven.BackgroundColor = ResourcesHelper.greenBrush;
                                 oven.FontColor = Brushes.Black;
                                 SoundService.Instance.PlaySound(SoundsList.OvenCanBeOpened);
+                                SoundService.Instance.PlaySound(_soundFiles?["SoundsFilesMainPath"]+oven.Number+".wav");
+
                                 oven.ResetTimer();
                             }
                         }
@@ -258,28 +261,18 @@ public class OvensDashboardWindowViewModel : ViewModelBase, INotifyPropertyChang
         }
     }
 
-    #region LoadOvens
+    #region Load Configs
     public List<Oven> LoadOvens()
     {
-        var configuration = new ConfigurationBuilder()
+        return _configuration.GetSection("Ovens").Get<List<Oven>>() ?? new List<Oven>();
+    }
+
+    private static IConfigurationRoot LoadConfigs()
+    {
+        return new ConfigurationBuilder()
             .SetBasePath(AppContext.BaseDirectory)
             .AddJsonFile("appsettings.json", optional: false, reloadOnChange: true)
             .Build();
-
-        return configuration.GetSection("Ovens").Get<List<Oven>>() ?? new List<Oven>();
     }
     #endregion
-
-    private void CloseWindow(IClosable window)
-    {
-        if (window != null)
-        {
-            window.Close();
-        }
-    }
-
-    public void Close()
-    {
-        throw new NotImplementedException();
-    }
 }
