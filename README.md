@@ -5,8 +5,8 @@ OvensManagerApp is a WPF desktop application built with C# using the MVVM patter
 ---
 ## Folders
 
-- ** OvensManager : first try using the Modbus protocol , after working with a network with more than 8 controllers, errors appeared with comunication with them.
-- ** OvensManagerApp : the working program wsing the Owen protocol.
+- **OvensManager:** first try using the Modbus protocol , after working with a network with more than 8 controllers, errors appeared with comunication with them.
+- **OvensManagerApp:** the working program wsing the Owen protocol.
 ---
 
 
