@@ -1,4 +1,5 @@
-﻿using OvensManagerApp.Enums;
+﻿using OvensCommonLib.Interfaces;
+using OvensManagerApp.Enums;
 using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
@@ -6,7 +7,7 @@ using System.Windows.Media;
 
 namespace OvensManagerApp.Models;
 
-public class Oven : INotifyPropertyChanged
+public class Oven : INotifyPropertyChanged, IOvenSnapshot
 {
     private int _number;
     private byte _address;
@@ -18,6 +19,7 @@ public class Oven : INotifyPropertyChanged
     private int _openingTemp;
     private string _ovenStatus = "Idle";
     public CycleSteps CycleStep { get; set; } = CycleSteps.Idle;
+    string IOvenSnapshot.CycleStep => CycleStep.ToString();
 
     public int Number
     {

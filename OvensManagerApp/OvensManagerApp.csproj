@@ -26,6 +26,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\OvensCommonLib\OvensCommonLib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Reference Include="OwenioNet">
       <HintPath>..\Testing\OwenioNet.dll</HintPath>
       <Private>True</Private>
