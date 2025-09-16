@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using Microsoft.Extensions.DependencyInjection;
 using OvensManagerApp.Services;
 using OvensManagerApp.ViewModels;
 using System.Windows;
@@ -19,7 +20,8 @@ public partial class MainWindowViewModel : ObservableObject
     {
         if (_dashboardVm is null)
         {
-            _dashboardVm = new OvensDashboardWindowViewModel();
+            // resolve from DI so OvenLogService is injected
+            _dashboardVm = ((App)Application.Current).Services.GetRequiredService<OvensDashboardWindowViewModel>();
             _windowService.ShowWindow(_dashboardVm);
         }
     }

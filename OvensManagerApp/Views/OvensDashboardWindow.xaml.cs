@@ -1,12 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Runtime.CompilerServices;
-using System.Windows;
-using Microsoft.Extensions.Configuration;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 using OvensManagerApp.Models;
 using OvensManagerApp.MyControls;
 using OvensManagerApp.Services;
 using OvensManagerApp.ViewModels;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+using System.Windows;
 using WpfScreenHelper;
 
 namespace OvensManagerApp.Views;
@@ -16,7 +17,9 @@ public partial class OvensDashboardWindow : Window
     public OvensDashboardWindow()
     {
         InitializeComponent();
-        this.DataContext = new OvensDashboardWindowViewModel();
+
+        // resolve from DI so OvensDashboardWindowViewModel is injected
+        this.DataContext = ((App)Application.Current).Services.GetRequiredService<OvensDashboardWindowViewModel>();
         MoveToSecondScreen();
         
     }
