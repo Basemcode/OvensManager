@@ -3,10 +3,12 @@
 OvensManagerApp is a WPF desktop application built with C# using the MVVM pattern. It provides a real-time dashboard to monitor and control multiple ovens. Each oven is represented as a card showing its number, temperature, runtime, and status, with dynamic color updates based on temperature.
 
 ---
-## Folders
+## Projects folders
 
 - **OvensManager:** first try using the Modbus protocol , after working with a network with more than 8 controllers, errors appeared with comunication with them.
 - **OvensManagerApp:** the working program wsing the Owen protocol.
+- **OvensCommonLib:** a library that contains all the classes for communication with the database using entity framework , later another project will use this library to show reports about ovens work.
+- **OvensReports:** 'ToDo'
 ---
 
 
@@ -30,6 +32,7 @@ OvensManagerApp is a WPF desktop application built with C# using the MVVM patter
 - **MVVM Design Pattern**
 - **ObservableCollection & INotifyPropertyChanged** for real-time UI updates
 - **Serial communication** (RS-485 / Owen protocol) for connecting with ovens
+- **Entity Framework** for fast development of database stuffs
 
 ---
 
